@@ -1,0 +1,35 @@
+{
+    "name": "easy-rpc",
+    "version": "1.0.0",
+    "description": "A easy discord rpc",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "keywords": [
+        "Valorant",
+        "RPC"
+    ],
+    "author": "Amitoj Singh",
+    "license": "MIT",
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "discord-rich-presence": "0.0.8",
+        "ejs": "^3.1.5",
+        "express": "^4.17.1",
+        "multer": "^1.4.2"
+    },
+    "pkg": {
+        "assets": [
+            "node_modules/**/*",
+            "static/**/*",
+            "views/**/*"
+        ],
+        "targets": [
+            "node12-macos-x64",
+            "node12-win-x64",
+            "node12-linux-x64"
+        ]
+    },
+    "bin": "index.js"
+}

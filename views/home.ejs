@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../static/home.css">
+</head>
+
+<body class="bg-dark">
+    <h1>Easy RPC</h1>
+    <form method="POST" action="/update"> 
+        <input type="text" name="token" class="input-feild" placeholder="Client ID" value="<%= data.token %>"><br><br>
+        <input type="text" name="state" class="input-feild" placeholder="State" value="<%= data.state %>">
+        <input type="text" name="details" class="input-feild" placeholder="Details" value="<%= data.details %>"><br>
+        <input type="number" name="starttime" class="input-feild" placeholder="Start Time" value="<%= data.starttime %>">
+        <input type="number" name="stoptime" class="input-feild" placeholder="Stop Time" value="<%= data.stoptime %>"><br>
+        <input type="text" name="limgkey" class="input-feild" placeholder="Large Image Key" value="<%= data.limgkey %>">
+        <input type="text" name="limgtxt" class="input-feild" placeholder="Large Image Text" value="<%= data.limgtxt %>"><br>
+        <input type="text" name="simgkey" class="input-feild" placeholder="Small Image Key" value="<%= data.simgkey %>">
+        <input type="text" name="simgtxt" class="input-feild" placeholder="Small Image Text" value="<%= data.simgtxt %>"><br>
+        <input type="text" name="pid" class="input-feild" placeholder="Party ID" value="<%= data.pid %>">
+        <input type="number" name="psize" class="input-feild" placeholder="Party Size" value="<%= data.psize %>"><br>
+        <input type="number" name="pmax" class="input-feild" placeholder="Party Max" value="<%= data.pmax %>">
+        <input type="text" name="jsecret" class="input-feild" placeholder="Join Secret" value="<%= data.jsecret %>"><br><br>
+        <button type="submit" class="start-btn">Start</button>
+    </form>
+    <br><br>
+    
+    <form method="POST" action="/disconnect">
+
+        <button type="submit" class="stop-btn">Stop</button>
+    </form>
+    <footer>
+        <p>
+            <font color="#99AAB5" size="2">Work By Amitoj Singh<br>View the source code here: <a
+                    href="https://shrt.amitoj.net/easy-rpc">https://shrt.amitoj.net/easy-rpc</a><br>Dont know what's going on? Check the <a
+                    href="/help">help section</a><br><form method="POST" action="/clear"><button class="clear-btn" type="submit">Clear Data</button></form></font>
+        </p>
+    </footer>
+</body>
+
+</html>
