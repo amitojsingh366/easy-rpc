@@ -11,7 +11,7 @@ I made this cause I had nothing else to do. So yeah.
 - Follow the instructions given on the webpage
 
 # License
-easy-rpc is licensed under the MIT License.
+easy-rpc is licensed under the MIT License
 
 # Contributing
 Find something that is lacking? Fork the project and pull request!
