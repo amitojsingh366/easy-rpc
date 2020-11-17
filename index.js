@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function(mod) {
 const path = __importDefault(require("path"));
 const express = __importDefault(require("express"));
 const bodyParser = require('body-parser');
-const fs = require('fs'); //fs.existsSync fs.readFileSync fs.writeFileSync
+const fs = require('fs');
 var multer = require('multer');
 var upload = multer();
 
@@ -13,7 +13,6 @@ const port = 6968;
 
 const app = express.default();
 
-//const config_path = path.default.join(__dirname, './easyRPC-config.json');
 const config_path = './easyRPC-config.json';
 
 try {
@@ -28,7 +27,6 @@ try {
 
 
 var configData = JSON.parse(fs.readFileSync(config_path));
-var token = configData.token;
 
 var started = false;
 
