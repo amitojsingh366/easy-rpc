@@ -30,6 +30,8 @@ try {
 var configData = JSON.parse(fs.readFileSync(config_path));
 var token = configData.token;
 
+var started = false;
+
 app.set('view engine', 'ejs');
 app.set('views', path.default.join(__dirname, './views'))
 app.use('/static', express.default.static(path.default.join(__dirname, './static')));
@@ -54,7 +56,8 @@ app.get('/', async(req, res, next) => {
         pid: configData.pid,
         psize: configData.psize,
         pmax: configData.pmax,
-        jsecret: configData.jsecret
+        jsecret: configData.jsecret,
+        running: started
     }
     res.render('home', { data: data });
 });
@@ -62,23 +65,26 @@ app.get('/', async(req, res, next) => {
 
 
 app.post('/update', async(req, res, next) => {
-    var data = {
-        token: req.body.token,
-        state: req.body.state,
-        details: req.body.details,
-        starttime: req.body.starttime,
-        stoptime: req.body.stoptime,
-        limgkey: req.body.limgkey,
-        limgtxt: req.body.limgtxt,
-        simgkey: req.body.simgkey,
-        simgtxt: req.body.simgtxt,
-        pid: req.body.pid,
-        psize: req.body.psize,
-        pmax: req.body.pmax,
-        jsecret: req.body.jsecret
+    if (!started) {
+        var data = {
+            token: req.body.token,
+            state: req.body.state,
+            details: req.body.details,
+            starttime: req.body.starttime,
+            stoptime: req.body.stoptime,
+            limgkey: req.body.limgkey,
+            limgtxt: req.body.limgtxt,
+            simgkey: req.body.simgkey,
+            simgtxt: req.body.simgtxt,
+            pid: req.body.pid,
+            psize: req.body.psize,
+            pmax: req.body.pmax,
+            jsecret: req.body.jsecret
+        }
+        await fs.writeFileSync(config_path, JSON.stringify(data));
+        await RPC(data);
+        started = true;
     }
-    await fs.writeFileSync(config_path, JSON.stringify(data));
-    await RPC(data);
     res.redirect('/');
 });
 

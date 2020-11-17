@@ -30,7 +30,7 @@
     font-size: large;
 }
 
-.stop-btn:hover{
+.stop-btn:hover {
     background-color: #ff6673;
 }
 
@@ -44,16 +44,18 @@
     font-size: small;
     margin-left: 20px;
 }
-a{
+
+a {
     color: #bcd0dd;
 }
-.clear-btn:hover{
+
+.clear-btn:hover {
     background-color: #99AAB5;
     color: #2C2F33;
     border: 1px solid #2C2F33;
 }
 
-.input-feild{
+.input-feild {
     outline: none;
     padding: 10px;
     width: 200px;
@@ -65,7 +67,16 @@ a{
     font-size: large;
 }
 
-.input-feild:focus{
+.input-feild:focus {
     outline: none;
     border: 1px solid #7289DA;
+}
+
+.banner-running {
+    background-color: #48b584;
+    width: 500px;
+    padding: 1px;
+    border-radius: 8px;
+    text-align: center;
+    align-self: center;
 }
