@@ -35,8 +35,8 @@
 }
 
 .clear-btn {
-    width: 100px;
-    height: 20px;
+    width: auto;
+    height: auto;
     background-color: #2C2F33;
     color: #99AAB5;
     border: 1px solid #99AAB5;
@@ -74,6 +74,15 @@ a {
 
 .banner-running {
     background-color: #48b584;
+    width: 500px;
+    padding: 1px;
+    border-radius: 8px;
+    text-align: center;
+    align-self: center;
+}
+
+.banner-error {
+    background-color: #c94747;
     width: 500px;
     padding: 1px;
     border-radius: 8px;

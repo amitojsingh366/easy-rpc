@@ -29,7 +29,7 @@ try {
 var configData = JSON.parse(fs.readFileSync(config_path));
 
 var started = false;
-
+let buttons = [];
 app.set('view engine', 'ejs');
 app.set('views', path.default.join(__dirname, './views'))
 app.use('/static', express.default.static(path.default.join(__dirname, './static')));
@@ -55,7 +55,11 @@ app.get('/', async(req, res, next) => {
         psize: configData.psize,
         pmax: configData.pmax,
         jsecret: configData.jsecret,
-        running: started
+        button_1_label: configData.button_1_label,
+        button_2_label: configData.button_2_label,
+        button_1_url: configData.button_1_url,
+        button_2_url: configData.button_2_url,
+        running: started,
     }
     res.render('home', { data: data });
 });
@@ -77,11 +81,22 @@ app.post('/update', async(req, res, next) => {
             pid: req.body.pid,
             psize: req.body.psize,
             pmax: req.body.pmax,
-            jsecret: req.body.jsecret
+            jsecret: req.body.jsecret,
+            button_1_label: req.body.button_1_label,
+            button_2_label: req.body.button_2_label,
+            button_1_url: req.body.button_1_url,
+            button_2_url: req.body.button_2_url,
+        }
+        if (req.body.button_1_label) {
+            buttons.push({ label: req.body.button_1_label, url: req.body.button_1_url });
+        }
+        if (req.body.button_2_label) {
+            buttons.push({ label: req.body.button_2_label, url: req.body.button_2_url });
         }
         await fs.writeFileSync(config_path, JSON.stringify(data));
         await RPC(data);
         started = true;
+
     }
     res.redirect('/');
 });
@@ -161,17 +176,18 @@ async function RPC(data) {
     if (data.jsecret) {
         presenceData.joinSecret = data.jsecret;
     }
+    if (buttons.length != 0) {
+        presenceData.buttons = buttons;
+    }
     presenceData.instance = true;
-    presenceData.matchSecret = 'NNmfnNsak';
-    presenceData.spectateSecret = 'kLopNq';
+    if (data.pid && data.psize && data.pmax && data.joinSecret) {
+        presenceData.matchSecret = 'NNmfnNsak';
+        presenceData.spectateSecret = 'kLopNq';
+    }
     client.on('connected', () => {
         console.log('Connected To Discord!');
         client.updatePresence(presenceData);
     });
 
     process.on('unhandledRejection', console.error);
-
-
-
-
 }
