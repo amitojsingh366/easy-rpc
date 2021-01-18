@@ -41,52 +41,14 @@ app.use(upload.array());
 
 app.get('/', async(req, res, next) => {
     configData = await JSON.parse(fs.readFileSync(config_path));
-    var data = {
-        token: configData.token,
-        state: configData.state,
-        details: configData.details,
-        starttime: configData.starttime,
-        stoptime: configData.stoptime,
-        limgkey: configData.limgkey,
-        limgtxt: configData.limgtxt,
-        simgkey: configData.simgkey,
-        simgtxt: configData.simgtxt,
-        pid: configData.pid,
-        psize: configData.psize,
-        pmax: configData.pmax,
-        jsecret: configData.jsecret,
-        button_1_label: configData.button_1_label,
-        button_2_label: configData.button_2_label,
-        button_1_url: configData.button_1_url,
-        button_2_url: configData.button_2_url,
-        running: started,
-    }
-    res.render('home', { data: data });
+    configData.running = started;
+    res.render('home', { data: configData });
 });
 
 
 
 app.post('/update', async(req, res, next) => {
     if (!started) {
-        var data = {
-            token: req.body.token,
-            state: req.body.state,
-            details: req.body.details,
-            starttime: req.body.starttime,
-            stoptime: req.body.stoptime,
-            limgkey: req.body.limgkey,
-            limgtxt: req.body.limgtxt,
-            simgkey: req.body.simgkey,
-            simgtxt: req.body.simgtxt,
-            pid: req.body.pid,
-            psize: req.body.psize,
-            pmax: req.body.pmax,
-            jsecret: req.body.jsecret,
-            button_1_label: req.body.button_1_label,
-            button_2_label: req.body.button_2_label,
-            button_1_url: req.body.button_1_url,
-            button_2_url: req.body.button_2_url,
-        }
         if (req.body.button_1_label) {
             buttons.push({ label: req.body.button_1_label, url: req.body.button_1_url });
         }
@@ -94,7 +56,7 @@ app.post('/update', async(req, res, next) => {
             buttons.push({ label: req.body.button_2_label, url: req.body.button_2_url });
         }
         await fs.writeFileSync(config_path, JSON.stringify(data));
-        await RPC(data);
+        await RPC(req.body);
         started = true;
 
     }
@@ -107,7 +69,7 @@ app.post('/disconnect', async(req, res, next) => {
 });
 
 app.post('/clear', async(req, res, next) => {
-    var data = { token: "" }
+    let data = { token: "" }
     await fs.writeFileSync(config_path, JSON.stringify(data));
     res.redirect('/');
 });
@@ -132,57 +94,17 @@ async function RPC(data) {
     });
 
     client.on('joinRequest', (user) => {
-        if (user.discriminator === '1337') {
-            client.reply(user, 'YES');
-        } else {
-            client.reply(user, 'IGNORE');
-        }
+        console.log(`User has requested to join.\nUser Details:\n${user}`)
     });
 
-    var presenceData = {}
-    if (data.state) {
-        presenceData.state = data.state;
-    }
-    if (data.details) {
-        presenceData.details = data.details;
-    }
-    if (data.starttime) {
-        presenceData.startTimestamp = Number(data.starttime);
-    }
-    if (data.stoptime) {
-        presenceData.endTimestamp = Number(data.stoptime);
-    }
-    if (data.limgkey) {
-        presenceData.largeImageKey = data.limgkey;
-    }
-    if (data.limgtxt) {
-        presenceData.largeImageText = data.limgtxt;
-    }
-    if (data.simgkey) {
-        presenceData.smallImageKey = data.simgkey;
-    }
-    if (data.simgtxt) {
-        presenceData.smallImageText = data.simgtxt;
-    }
-    if (data.pid) {
-        presenceData.partyId = data.pid;
-    }
-    if (data.psize) {
-        presenceData.partySize = Number(data.psize);
-    }
-    if (data.pmax) {
-        presenceData.partyMax = Number(data.pmax);
-    }
-    if (data.jsecret) {
-        presenceData.joinSecret = data.jsecret;
-    }
+    var presenceData = await cleanData(data);
     if (buttons.length != 0) {
         presenceData.buttons = buttons;
     }
     presenceData.instance = true;
     if (data.pid && data.psize && data.pmax && data.joinSecret) {
-        presenceData.matchSecret = 'NNmfnNsak';
-        presenceData.spectateSecret = 'kLopNq';
+        presenceData.matchSecret = randomString(8);
+        presenceData.spectateSecret = randomString(8);
     }
     client.on('connected', () => {
         console.log('Connected To Discord!');
@@ -190,4 +112,19 @@ async function RPC(data) {
     });
 
     process.on('unhandledRejection', console.error);
+}
+
+async function cleanData(obj) {
+  for (var n in obj) {
+    if (obj[n] === null || obj[n] === undefined || obj[n] === '') {
+      delete obj[n];
+    }
+  }
+  return obj
+}
+export async function randomString(length) {
+    var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    return result;
 }
