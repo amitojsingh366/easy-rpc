@@ -1,6 +1,6 @@
 {
     "name": "easy-rpc",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "A easy discord rpc",
     "main": "index.js",
     "scripts": {
