@@ -55,7 +55,7 @@ app.post('/update', async(req, res, next) => {
         if (req.body.button_2_label) {
             buttons.push({ label: req.body.button_2_label, url: req.body.button_2_url });
         }
-        await fs.writeFileSync(config_path, JSON.stringify(data));
+        await fs.writeFileSync(config_path, JSON.stringify(req.body));
         await RPC(req.body);
         started = true;
 
@@ -115,14 +115,14 @@ async function RPC(data) {
 }
 
 async function cleanData(obj) {
-  for (var n in obj) {
-    if (obj[n] === null || obj[n] === undefined || obj[n] === '') {
-      delete obj[n];
+    for (var n in obj) {
+        if (obj[n] === null || obj[n] === undefined || obj[n] === '') {
+            delete obj[n];
+        }
     }
-  }
-  return obj
+    return obj
 }
-export async function randomString(length) {
+async function randomString(length) {
     var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var result = '';
     for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
