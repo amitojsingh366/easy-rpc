@@ -56,7 +56,6 @@ app.post('/update', async (req, res, next) => {
             buttons.push({ label: req.body.button_2_label, url: req.body.button_2_url });
         }
         await fs.writeFileSync(config_path, JSON.stringify(req.body));
-        console.log(req.body)
         await RPC(req.body);
         started = true;
 
@@ -98,15 +97,31 @@ async function RPC(data) {
         console.log(`User has requested to join.\nUser Details:\n${user}`)
     });
 
-    var presenceData = await cleanData(data);
+    let presenceData = await cleanData(data);
     if (buttons.length != 0) {
         presenceData.buttons = buttons;
     }
-    presenceData.instance = true;
-    if (data.partyId && data.partySize && data.partyMax && data.joinSecret) {
-        presenceData.matchSecret = randomString(8);
-        presenceData.spectateSecret = randomString(8);
+
+    if (presenceData.startTimestamp) {
+        presenceData.startTimestamp = Number(presenceData.startTimestamp)
     }
+    if (presenceData.endTimestamp) {
+        presenceData.endTimestamp = Number(presenceData.endTimestamp)
+    }
+    if (presenceData.partySize) {
+        presenceData.partySize = Number(presenceData.partySize)
+    }
+    if (presenceData.partyMax) {
+        presenceData.partyMax = Number(presenceData.partyMax)
+    }
+    presenceData.instance = true;
+
+    if (data.partyId && data.partySize && data.partyMax && data.joinSecret) {
+        presenceData.matchSecret = await randomString(8);
+        presenceData.spectateSecret = await randomString(8);
+        delete presenceData.buttons;
+    }
+
     client.on('connected', () => {
         console.log('Connected To Discord!');
         client.updatePresence(presenceData);
