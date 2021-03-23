@@ -1,4 +1,4 @@
-var __importDefault = (this && this.__importDefault) || function(mod) {
+var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 
@@ -39,7 +39,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(upload.array());
 
-app.get('/', async(req, res, next) => {
+app.get('/', async (req, res, next) => {
     configData = await JSON.parse(fs.readFileSync(config_path));
     configData.running = started;
     res.render('home', { data: configData });
@@ -47,7 +47,7 @@ app.get('/', async(req, res, next) => {
 
 
 
-app.post('/update', async(req, res, next) => {
+app.post('/update', async (req, res, next) => {
     if (!started) {
         if (req.body.button_1_label) {
             buttons.push({ label: req.body.button_1_label, url: req.body.button_1_url });
@@ -56,6 +56,7 @@ app.post('/update', async(req, res, next) => {
             buttons.push({ label: req.body.button_2_label, url: req.body.button_2_url });
         }
         await fs.writeFileSync(config_path, JSON.stringify(req.body));
+        console.log(req.body)
         await RPC(req.body);
         started = true;
 
@@ -63,18 +64,18 @@ app.post('/update', async(req, res, next) => {
     res.redirect('/');
 });
 
-app.post('/disconnect', async(req, res, next) => {
+app.post('/disconnect', async (req, res, next) => {
     res.redirect('/');
     process.exit();
 });
 
-app.post('/clear', async(req, res, next) => {
+app.post('/clear', async (req, res, next) => {
     let data = { token: "" }
     await fs.writeFileSync(config_path, JSON.stringify(data));
     res.redirect('/');
 });
 
-app.get('/help', async(req, res, next) => {
+app.get('/help', async (req, res, next) => {
     res.render('help');
 });
 
@@ -102,7 +103,7 @@ async function RPC(data) {
         presenceData.buttons = buttons;
     }
     presenceData.instance = true;
-    if (data.pid && data.psize && data.pmax && data.joinSecret) {
+    if (data.partyId && data.partySize && data.partyMax && data.joinSecret) {
         presenceData.matchSecret = randomString(8);
         presenceData.spectateSecret = randomString(8);
     }
