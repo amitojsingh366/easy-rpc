@@ -16,8 +16,8 @@ I made this cause I had nothing else to do. So yeah.
 - Clone this repo
 - Navigate to to it's directory
 - Run `npm install`
-- Run `npm run build`
-- Check the `build` directory
+- Run `npm run build:%YOUR_PLATFORM_CODE%`
+- Check the `builds` directory
 
 # License
 easy-rpc is licensed under the MIT License
