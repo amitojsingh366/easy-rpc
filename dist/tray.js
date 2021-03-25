@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HandleTray = void 0;
 var electron_1 = require("electron");
 var index_1 = require("./index");
-function HandleTray(mainWindow, tray) {
+function HandleTray(tray) {
     return __awaiter(this, void 0, void 0, function () {
         var TRAY_MENU, contextMenu;
         return __generator(this, function (_a) {
@@ -47,19 +47,19 @@ function HandleTray(mainWindow, tray) {
                 {
                     label: "Open Easy RPC",
                     click: function () {
-                        if (mainWindow.isDestroyed()) {
+                        if (index_1.mainWindow.isDestroyed()) {
                             index_1.createWindow();
                         }
                         else {
-                            mainWindow.focus();
+                            index_1.mainWindow.focus();
                         }
                     },
                 },
                 {
                     label: "Quit Easy RPC",
                     click: function () {
-                        if (!mainWindow.isDestroyed()) {
-                            mainWindow.close();
+                        if (!index_1.mainWindow.isDestroyed()) {
+                            index_1.mainWindow.close();
                         }
                         electron_1.app.quit();
                     },
@@ -68,11 +68,11 @@ function HandleTray(mainWindow, tray) {
             // create system tray
             tray.setToolTip("Amitoj's Easy RPC");
             tray.on("click", function () {
-                if (mainWindow.isDestroyed()) {
+                if (index_1.mainWindow.isDestroyed()) {
                     index_1.createWindow();
                 }
                 else {
-                    mainWindow.focus();
+                    index_1.mainWindow.focus();
                 }
             });
             contextMenu = electron_1.Menu.buildFromTemplate(TRAY_MENU);

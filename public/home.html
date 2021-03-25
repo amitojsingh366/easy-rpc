@@ -110,6 +110,8 @@
     })
     if (localStorage.getItem("@app/shouldDock")) {
         document.getElementById("should-dock-checkbox").checked = JSON.parse(localStorage.getItem("@app/shouldDock"));
+    } else {
+        document.getElementById("should-dock-checkbox").checked = true;
     }
 
     ipcRenderer.on("@app/shouldDock", (event, args) => {

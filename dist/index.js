@@ -118,7 +118,7 @@ electron_1.app.on("ready", function () { return __awaiter(void 0, void 0, void 0
             case 2:
                 _a.sent();
                 tray = new electron_1.Tray(path.join(__dirname, "../icons/tray.png"));
-                return [4 /*yield*/, tray_1.HandleTray(exports.mainWindow, tray)];
+                return [4 /*yield*/, tray_1.HandleTray(tray)];
             case 3:
                 _a.sent();
                 exports.mainWindow.webContents.send("@app/shouldDock", "");

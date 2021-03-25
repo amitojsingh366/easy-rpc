@@ -49,7 +49,7 @@ app.on("ready", async () => {
 
     await startHandler()
     tray = new Tray(path.join(__dirname, `../icons/tray.png`));
-    await HandleTray(mainWindow, tray);
+    await HandleTray(tray);
     mainWindow.webContents.send("@app/shouldDock", "");
     ipcMain.on("@app/shouldDock", (event, shouldDock) => {
         commons.shouldDock = shouldDock;

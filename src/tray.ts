@@ -1,7 +1,7 @@
 import { app, BrowserWindow, Menu, Tray } from "electron";
-import { createWindow } from "./index";
+import { createWindow, mainWindow } from "./index";
 
-export async function HandleTray(mainWindow: BrowserWindow, tray: Tray) {
+export async function HandleTray( tray: Tray) {
     let TRAY_MENU: any = [
         {
             label: "Open Easy RPC",
