@@ -49,6 +49,10 @@
                     href="https://shrt.amitoj.net/easy-rpc">https://shrt.amitoj.net/easy-rpc</a><br>Dont know
                 what's
                 going on? Check the <button class="a" onclick="goHelp()" href="">help section</button><br>
+                Dock to system tray: <label class="switch">
+                    <input type="checkbox" onclick="updateShouldDock()" id="should-dock-checkbox">
+                    <span class="slider round"></span>
+                </label><br>
                 <button class="clear-btn" onclick="clearData()">Clear Data</button>
 
             </font>
@@ -92,6 +96,7 @@
         console.log(data);
     }
 
+    ipcRenderer.send("@rpc/status", "");
     setInterval(() => {
         ipcRenderer.send("@rpc/status", "");
     }, 2500)
@@ -103,6 +108,13 @@
             document.getElementById("is-running-banner").style.display = 'none';
         }
     })
+    if (localStorage.getItem("@app/shouldDock")) {
+        document.getElementById("should-dock-checkbox").checked = JSON.parse(localStorage.getItem("@app/shouldDock"));
+    }
+
+    ipcRenderer.on("@app/shouldDock", (event, args) => {
+        ipcRenderer.send("@app/shouldDock", document.getElementById("should-dock-checkbox").checked);
+    });
 
     function clearData() {
         localStorage.clear();
@@ -188,6 +200,11 @@
 
     function goQuit() {
         ipcRenderer.send("@app/quit", true);
+    }
+
+    function updateShouldDock() {
+        localStorage.setItem("@app/shouldDock", document.getElementById("should-dock-checkbox").checked);
+        ipcRenderer.send("@app/shouldDock", document.getElementById("should-dock-checkbox").checked);
     }
 
 

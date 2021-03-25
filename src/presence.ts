@@ -1,6 +1,7 @@
 import * as Discord from 'discord-rpc';
 import { ipcMain, BrowserWindow } from 'electron';
 import * as path from "path";
+import { mainWindow } from "./index"
 
 const rpc = new Discord.Client({ transport: 'ipc' });
 
@@ -8,7 +9,7 @@ export let RPC_STARTED = false;
 let PREV_TOKEN = "";
 let buttons: [{ label: string, url: string }];
 
-export async function startHandler(mainWindow: BrowserWindow) {
+export async function startHandler() {
     ipcMain.on("@rpc/update", async (event, data) => {
         if (data.button_1_label) {
             if (!buttons) {
@@ -63,23 +64,31 @@ export async function startHandler(mainWindow: BrowserWindow) {
 
         if (RPC_STARTED) {
             rpc.setActivity(presenceData);
-            mainWindow.webContents.send("@rpc/status", RPC_STARTED);
+            if (!mainWindow.isDestroyed()) {
+                mainWindow.webContents.send("@rpc/status", RPC_STARTED);
+            }
         } else {
             rpc.on('ready', () => {
                 RPC_STARTED = true;
                 rpc.setActivity(presenceData);
-                mainWindow.webContents.send("@rpc/status", RPC_STARTED);
+                if (!mainWindow.isDestroyed()) {
+                    mainWindow.webContents.send("@rpc/status", RPC_STARTED);
+                }
             });
         }
 
     });
 
     ipcMain.on("@window/navigate", (event, file) => {
-        mainWindow.webContents.loadFile(path.join(__dirname, `../public/${file}`)).catch(console.error);
+        if (!mainWindow.isDestroyed()) {
+            mainWindow.webContents.loadFile(path.join(__dirname, `../public/${file}`)).catch(console.error);
+        }
     })
 
     ipcMain.on("@rpc/status", (event, args) => {
-        mainWindow.webContents.send("@rpc/status", RPC_STARTED);
+        if (!mainWindow.isDestroyed()) {
+            mainWindow.webContents.send("@rpc/status", RPC_STARTED);
+        }
     })
 }
 

@@ -55,21 +55,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createWindow = void 0;
+exports.createWindow = exports.commons = exports.mainWindow = void 0;
 var electron_1 = require("electron");
 var path = __importStar(require("path"));
 var electron_updater_1 = require("electron-updater");
 var presence_1 = require("./presence");
 var tray_1 = require("./tray");
-var mainWindow;
 var tray;
+exports.commons = {
+    shouldDock: true,
+};
 function createWindow() {
     return __awaiter(this, void 0, void 0, function () {
+        var handleLinks;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     // Create the browser window.
-                    mainWindow = new electron_1.BrowserWindow({
+                    exports.mainWindow = new electron_1.BrowserWindow({
                         height: 825,
                         width: 600,
                         autoHideMenuBar: true,
@@ -79,10 +82,16 @@ function createWindow() {
                         },
                     });
                     // and load the index.html of the app.
-                    return [4 /*yield*/, mainWindow.loadFile(path.join(__dirname, "../public/home.html"))];
+                    return [4 /*yield*/, exports.mainWindow.loadFile(path.join(__dirname, "../public/home.html"))];
                 case 1:
                     // and load the index.html of the app.
                     _a.sent();
+                    handleLinks = function (event, url) {
+                        event.preventDefault();
+                        electron_1.shell.openExternal(url);
+                    };
+                    exports.mainWindow.webContents.on("new-window", handleLinks);
+                    exports.mainWindow.webContents.on("will-navigate", handleLinks);
                     return [2 /*return*/];
             }
         });
@@ -105,13 +114,17 @@ electron_1.app.on("ready", function () { return __awaiter(void 0, void 0, void 0
                     if (electron_1.BrowserWindow.getAllWindows().length === 0)
                         createWindow();
                 });
-                return [4 /*yield*/, presence_1.startHandler(mainWindow)];
+                return [4 /*yield*/, presence_1.startHandler()];
             case 2:
                 _a.sent();
                 tray = new electron_1.Tray(path.join(__dirname, "../icons/tray.png"));
-                return [4 /*yield*/, tray_1.HandleTray(mainWindow, tray)];
+                return [4 /*yield*/, tray_1.HandleTray(exports.mainWindow, tray)];
             case 3:
                 _a.sent();
+                exports.mainWindow.webContents.send("@app/shouldDock", "");
+                electron_1.ipcMain.on("@app/shouldDock", function (event, shouldDock) {
+                    exports.commons.shouldDock = shouldDock;
+                });
                 electron_1.ipcMain.on("@app/quit", function (event, args) {
                     electron_1.app.quit();
                 });
@@ -123,7 +136,7 @@ electron_1.app.on("ready", function () { return __awaiter(void 0, void 0, void 0
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 electron_1.app.on("window-all-closed", function () {
-    if (presence_1.RPC_STARTED) {
+    if (presence_1.RPC_STARTED && exports.commons.shouldDock) {
         return;
     }
     else {

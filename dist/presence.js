@@ -59,11 +59,12 @@ exports.startHandler = exports.RPC_STARTED = void 0;
 var Discord = __importStar(require("discord-rpc"));
 var electron_1 = require("electron");
 var path = __importStar(require("path"));
+var index_1 = require("./index");
 var rpc = new Discord.Client({ transport: 'ipc' });
 exports.RPC_STARTED = false;
 var PREV_TOKEN = "";
 var buttons;
-function startHandler(mainWindow) {
+function startHandler() {
     return __awaiter(this, void 0, void 0, function () {
         var _this = this;
         return __generator(this, function (_a) {
@@ -129,13 +130,17 @@ function startHandler(mainWindow) {
                             delete presenceData.token;
                             if (exports.RPC_STARTED) {
                                 rpc.setActivity(presenceData);
-                                mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
+                                if (!index_1.mainWindow.isDestroyed()) {
+                                    index_1.mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
+                                }
                             }
                             else {
                                 rpc.on('ready', function () {
                                     exports.RPC_STARTED = true;
                                     rpc.setActivity(presenceData);
-                                    mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
+                                    if (!index_1.mainWindow.isDestroyed()) {
+                                        index_1.mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
+                                    }
                                 });
                             }
                             return [2 /*return*/];
@@ -143,10 +148,14 @@ function startHandler(mainWindow) {
                 });
             }); });
             electron_1.ipcMain.on("@window/navigate", function (event, file) {
-                mainWindow.webContents.loadFile(path.join(__dirname, "../public/" + file)).catch(console.error);
+                if (!index_1.mainWindow.isDestroyed()) {
+                    index_1.mainWindow.webContents.loadFile(path.join(__dirname, "../public/" + file)).catch(console.error);
+                }
             });
             electron_1.ipcMain.on("@rpc/status", function (event, args) {
-                mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
+                if (!index_1.mainWindow.isDestroyed()) {
+                    index_1.mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
+                }
             });
             return [2 /*return*/];
         });

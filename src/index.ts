@@ -1,11 +1,15 @@
-import { app, BrowserWindow, ipcMain, Tray } from "electron";
+import { app, BrowserWindow, ipcMain, shell, Tray } from "electron";
 import * as path from "path";
 import { autoUpdater } from "electron-updater";
 import { RPC_STARTED, startHandler } from "./presence";
 import { HandleTray } from "./tray";
 
-let mainWindow: BrowserWindow;
+export let mainWindow: BrowserWindow;
 let tray: Tray;
+
+export const commons = {
+    shouldDock: true,
+}
 
 export async function createWindow() {
     // Create the browser window.
@@ -21,6 +25,14 @@ export async function createWindow() {
 
     // and load the index.html of the app.
     await mainWindow.loadFile(path.join(__dirname, "../public/home.html"));
+
+    // handling external links
+    const handleLinks = (event: any, url: string) => {
+        event.preventDefault();
+        shell.openExternal(url);
+    };
+    mainWindow.webContents.on("new-window", handleLinks);
+    mainWindow.webContents.on("will-navigate", handleLinks);
 }
 
 // This method will be called when Electron has finished
@@ -35,10 +47,13 @@ app.on("ready", async () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });
 
-    await startHandler(mainWindow)
+    await startHandler()
     tray = new Tray(path.join(__dirname, `../icons/tray.png`));
     await HandleTray(mainWindow, tray);
-
+    mainWindow.webContents.send("@app/shouldDock", "");
+    ipcMain.on("@app/shouldDock", (event, shouldDock) => {
+        commons.shouldDock = shouldDock;
+    })
     ipcMain.on("@app/quit", (event, args) => {
         app.quit();
     })
@@ -48,7 +63,7 @@ app.on("ready", async () => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
-    if (RPC_STARTED) {
+    if (RPC_STARTED && commons.shouldDock) {
         return;
     } else {
         app.quit();
