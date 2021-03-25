@@ -1,3 +1,4 @@
-build
+builds
 easyRPC-config.json
 .vscode
+node_modules

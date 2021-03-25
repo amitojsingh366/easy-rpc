@@ -1,42 +1,72 @@
 {
     "name": "easy-rpc",
-    "version": "1.2.2",
+    "version": "2.0.0",
     "description": "A easy discord rpc",
-    "main": "index.js",
+    "main": "dist/index.js",
     "scripts": {
-        "start": "node index.js",
-        "dev": "nodemon index.js",
-        "build": "pkg . --output build/easyRPC"
+        "compile": "tsc",
+        "watch": "tsc -w",
+        "start": "yarn compile && electron ./dist/electron.js",
+        "build": "yarn compile && electron-builder",
+        "build:all": "yarn compile && electron-builder -mwl",
+        "build:mac": "yarn compile && electron-builder --mac",
+        "build:win": "yarn compile && electron-builder --win",
+        "build:linux": "yarn compile && electron-builder --linux"
     },
     "keywords": [
         "Discord",
         "RPC"
     ],
-    "author": "Amitoj Singh",
-    "license": "MIT",
+    "author": "Ben Awad <benawadapps@gmail.com>",
+    "homepage": "https://github.com/amitojsingh366/easy-rpc",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/amitojsingh366/easy-rpc"
+    },
+    "bugs": {
+        "url": "https://github.com/amitojsingh366/easy-rpc/issues"
+    },
+    "build": {
+        "appId": "com.electron.dogehouse",
+        "productName": "DogeHouse",
+        "asar": true,
+        "mac": {
+            "icon": "icons/icon.png",
+            "category": "public.app-category.utilities",
+            "target": [
+                "dmg"
+            ]
+        },
+        "win": {
+            "icon": "icons/icon.png",
+            "target": "nsis",
+            "publish": [
+                "github"
+            ]
+        },
+        "linux": {
+            "icon": "icons/icon.png",
+            "target": [
+                "deb"
+            ]
+        },
+        "extraMetadata": {
+            "main": "dist/index.js"
+        },
+        "directories": {
+            "output": "./builds"
+        },
+        "extends": null
+    },
     "dependencies": {
-        "body-parser": "^1.19.0",
-        "discord-rich-presence": "0.0.8",
-        "ejs": "^3.1.5",
-        "express": "^4.17.1",
-        "multer": "^1.4.2"
+        "electron-updater": "^4.3.8"
     },
-    "pkg": {
-        "assets": [
-            "node_modules/**/*",
-            "static/**/*",
-            "views/**/*"
-        ],
-        "targets": [
-            "node14-macos-x64",
-            "node14-win-x64",
-            "node14-linux-x64"
-        ]
-    },
-    
-    "bin": "index.js",
     "devDependencies": {
-        "pkg": "^4.5.0",
-        "nodemon": "^2.0.7"
-    }
+        "electron": "^12.0.2",
+        "electron-builder": "^22.10.5",
+        "typescript": "^4.2.3"
+    },
+    "files": [
+        "./icons/**/*"
+    ]
 }
