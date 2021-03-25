@@ -151,7 +151,6 @@ a{
     transform: translateX(15px);
   }
   
-  /* Rounded sliders */
   .slider.round {
     border-radius: 34px;
   }
