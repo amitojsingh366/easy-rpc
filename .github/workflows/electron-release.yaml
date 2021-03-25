@@ -1,11 +1,6 @@
 name: build-and-release-electron
 
-on:
-  push:
-    paths:
-      - "/"
-    branches:
-      - main
+on: push
 
 jobs:
   release:
