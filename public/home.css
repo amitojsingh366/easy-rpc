@@ -45,10 +45,18 @@
     margin-left: 20px;
 }
 
-a {
+.a {
+    color: #bcd0dd;
+    background: none;
+	margin: 0;
+	padding: 0;
+	border: none;
+	cursor: pointer;
+    text-decoration: underline;
+}
+a{
     color: #bcd0dd;
 }
-
 .clear-btn:hover {
     background-color: #99AAB5;
     color: #2C2F33;

@@ -2,17 +2,11 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="../static/home.css">
+    <link rel="stylesheet" href="./home.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body class="bg-dark">
-    <script>
-        let b1l = "<%= data.button_1_label %>";
-        let b1u = "<%= data.button_1_url %>"
-        let b2l = "<%= data.button_2_label %>";
-        let b2u = "<%= data.button_2_url %>"
-    </script>
     <h1>Easy RPC</h1>
     <center>
 
@@ -20,73 +14,181 @@
             <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i>Not more than 2
                 buttons can be used!</p>
         </div>
+
+        <div class="banner-running" style="display: none;" id="is-running-banner">
+            <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i> RPC is running!</p>
+        </div>
     </center><br>
-    <% if (data.running) { %>
-        <center>
-            <div class="banner-running">
-                <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i> RPC is running!
-                    To
-                    update
-                    data please restart the program</p>
-            </div>
-        </center><br>
-        <% } %>
-            <form method="POST" action="/update">
-                <input type="text" name="token" class="input-feild" placeholder="Client ID"
-                    value="<%= data.token %>"><br>
-                <input type="text" name="state" class="input-feild" placeholder="State" value="<%= data.state %>">
-                <input type="text" name="details" class="input-feild" placeholder="Details"
-                    value="<%= data.details %>"><br>
-                <input type="number" name="startTimestamp" class="input-feild" placeholder="Start Time"
-                    value="<%= data.startTimestamp %>">
-                <input type="number" name="endTimestamp" class="input-feild" placeholder="Stop Time"
-                    value="<%= data.endTimestamp %>"><br>
-                <input type="text" name="largeImageKey" class="input-feild" placeholder="Large Image Key"
-                    value="<%= data.largeImageKey %>">
-                <input type="text" name="largeImageText" class="input-feild" placeholder="Large Image Text"
-                    value="<%= data.largeImageText %>"><br>
-                <input type="text" name="smallImageKey" class="input-feild" placeholder="Small Image Key"
-                    value="<%= data.smallImageKey %>">
-                <input type="text" name="smallImageText" class="input-feild" placeholder="Small Image Text"
-                    value="<%= data.smallImageText %>"><br>
-                <input type="text" name="partyId" class="input-feild" placeholder="Party ID"
-                    value="<%= data.partyId %>">
-                <input type="number" name="partySize" class="input-feild" placeholder="Party Size"
-                    value="<%= data.partySize %>"><br>
-                <input type="number" name="partyMax" class="input-feild" placeholder="Party Max"
-                    value="<%= data.partyMax %>">
-                <input type="text" name="joinSecret" class="input-feild" placeholder="Join Secret"
-                    value="<%= data.joinSecret %>"><br>
-                <label>Buttons: </label><span style="margin-top: 5px;" onclick="addButton()"
-                    class="clear-btn material-icons">
-                    add_circle_outline
-                </span>
-                <div id="buttons">
+    <input type="text" name="token" id="token" class="input-feild" placeholder="Client ID"><br>
+    <input type="text" name="state" id="state" class="input-feild" placeholder="State">
+    <input type="text" name="details" id="details" class="input-feild" placeholder="Details"><br>
+    <input type="number" name="startTimestamp" id="startTimestamp" class="input-feild" placeholder="Start Time">
+    <input type="number" name="endTimestamp" id="endTimestamp" class="input-feild" placeholder="Stop Time"><br>
+    <input type="text" name="largeImageKey" id="largeImageKey" class="input-feild" placeholder="Large Image Key">
+    <input type="text" name="largeImageText" id="largeImageText" class="input-feild" placeholder="Large Image Text"><br>
+    <input type="text" name="smallImageKey" id="smallImageKey" class="input-feild" placeholder="Small Image Key">
+    <input type="text" name="smallImageText" id="smallImageText" class="input-feild" placeholder="Small Image Text"><br>
+    <input type="text" name="partyId" id="partyId" class="input-feild" placeholder="Party ID">
+    <input type="number" name="partySize" id="partySize" class="input-feild" placeholder="Party Size"><br>
+    <input type="number" name="partyMax" id="partyMax" class="input-feild" placeholder="Party Max">
+    <input type="text" name="joinSecret" id="joinSecret" class="input-feild" placeholder="Join Secret"><br>
+    <label>Buttons: </label><span style="margin-top: 5px;" onclick="addButton()" class="clear-btn material-icons">
+        add_circle_outline
+    </span>
+    <div id="buttons"></div>
+    <br><br>
 
-                </div>
-                <br><br>
+    <button onclick="submitData()" class="start-btn">Start</button>
+    <br><br>
 
-                <button type="submit" class="start-btn">Start</button>
-            </form>
-            <br><br>
 
-            <form method="POST" action="/disconnect">
+    <button class="stop-btn" onclick="goQuit()">Quit</button>
+    <footer>
+        <p>
+            <font color="#99AAB5" size="2">Work By Amitoj Singh<br>View the source code here: <a
+                    href="https://shrt.amitoj.net/easy-rpc">https://shrt.amitoj.net/easy-rpc</a><br>Dont know
+                what's
+                going on? Check the <button class="a" onclick="goHelp()" href="">help section</button><br>
+                <button class="clear-btn" onclick="clearData()">Clear Data</button>
 
-                <button type="submit" class="stop-btn">Stop</button>
-            </form>
-            <footer>
-                <p>
-                    <font color="#99AAB5" size="2">Work By Amitoj Singh<br>View the source code here: <a
-                            href="https://shrt.amitoj.net/easy-rpc">https://shrt.amitoj.net/easy-rpc</a><br>Dont know
-                        what's
-                        going on? Check the <a href="/help">help section</a><br>
-                        <form method="POST" action="/clear"><button class="clear-btn" type="submit">Clear Data</button>
-                        </form>
-                    </font>
-                </p>
-            </footer>
+            </font>
+        </p>
+    </footer>
 </body>
-<script defer>
+<script>
+    const { ipcRenderer } = window.require('electron');
+    let b1l = ""
+    let b1u = ""
+    let b2l = ""
+    let b2u = ""
+    let data = localStorage.getItem("@rpc/data");
+    data = JSON.parse(data);
+    if (data) {
+        document.getElementById("token").value = data.token
+        document.getElementById("state").value = data.state
+        document.getElementById("details").value = data.details
+        document.getElementById("startTimestamp").value = data.startTimestamp
+        document.getElementById("endTimestamp").value = data.endTimestamp
+        document.getElementById("largeImageKey").value = data.largeImageKey
+        document.getElementById("largeImageText").value = data.largeImageText
+        document.getElementById("smallImageKey").value = data.smallImageKey
+        document.getElementById("smallImageText").value = data.smallImageText
+        document.getElementById("partyId").value = data.partyId
+        document.getElementById("partySize").value = data.partySize
+        document.getElementById("partyMax").value = data.partyMax
+        document.getElementById("joinSecret").value = data.joinSecret
+        if (data.button_1_label) {
+            b1l = data.button_1_label;
+        }
+        if (data.button_1_url) {
+            b1u = data.button_1_url
+        }
+        if (data.button_2_label) {
+            b2l = data.button_2_label;
+        }
+        if (data.button_2_url) {
+            b2u = data.button_2_url
+        }
+        console.log(data);
+    }
+
+    setInterval(() => {
+        ipcRenderer.send("@rpc/status", "");
+    }, 2500)
+
+    ipcRenderer.on("@rpc/status", (event, isRunning) => {
+        if (isRunning) {
+            document.getElementById("is-running-banner").style.display = 'inherit';
+        } else {
+            document.getElementById("is-running-banner").style.display = 'none';
+        }
+    })
+
+    function clearData() {
+        localStorage.clear();
+    }
+    function submitData() {
+        let data = {
+            token: document.getElementById("token").value,
+            state: document.getElementById("state").value,
+            details: document.getElementById("details").value,
+            startTimestamp: document.getElementById("startTimestamp").value,
+            endTimestamp: document.getElementById("endTimestamp").value,
+            largeImageKey: document.getElementById("largeImageKey").value,
+            largeImageText: document.getElementById("largeImageText").value,
+            smallImageKey: document.getElementById("smallImageKey").value,
+            smallImageText: document.getElementById("smallImageText").value,
+            partyId: document.getElementById("partyId").value,
+            partySize: document.getElementById("partySize").value,
+            partyMax: document.getElementById("partyMax").value,
+            joinSecret: document.getElementById("joinSecret").value,
+        }
+
+        if (document.getElementById("button_1_label") || document.getElementById("button_1_url")) {
+            data.button_1_label = document.getElementById("button_1_label").value;
+            data.button_1_url = document.getElementById("button_1_url").value;
+        }
+
+        if (document.getElementById("button_2_label") || document.getElementById("button_2_url")) {
+            data.button_2_label = document.getElementById("button_2_label").value;
+            data.button_2_url = document.getElementById("button_2_url").value;
+        }
+
+        localStorage.setItem("@rpc/data", JSON.stringify(data));
+        ipcRenderer.send("@rpc/update", data);
+    }
+
+
+    function addButton() {
+        let btn_div = document.getElementById('buttons');
+        if (document.getElementById('button_1_label')) {
+            if (document.getElementById('button_2_label')) {
+                document.getElementById('2-btn-err').style.display = 'inherit';
+            } else {
+                btn_div.append(document.createElement('br'));
+                let input = document.createElement('input');
+                let input_2 = document.createElement('input');
+                input.type = 'text';
+                input.name = 'button_2_label';
+                input.id = 'button_2_label';
+                input.className = 'input-feild';
+                input.placeholder = 'Button Label';
+                input.value = b2l;
+                input_2.type = 'text';
+                input_2.name = 'button_2_url';
+                input_2.id = 'button_2_url';
+                input_2.className = 'input-feild';
+                input_2.placeholder = 'Button Url';
+                input_2.value = b2u;
+                btn_div.append(input);
+                btn_div.append(input_2);
+            }
+        } else {
+            let input = document.createElement('input');
+            let input_2 = document.createElement('input');
+            input.type = 'text';
+            input.name = 'button_1_label';
+            input.id = 'button_1_label';
+            input.className = 'input-feild';
+            input.placeholder = 'Button Label';
+            input.value = b1l;
+            input_2.type = 'text';
+            input_2.name = 'button_1_url';
+            input_2.id = 'button_1_url';
+            input_2.className = 'input-feild';
+            input_2.placeholder = 'Button Url';
+            input_2.value = b1u;
+            btn_div.append(input);
+            btn_div.append(input_2);
+        }
+    }
+    function goHelp() {
+        ipcRenderer.send("@window/navigate", "help.html");
+    }
+
+    function goQuit() {
+        ipcRenderer.send("@app/quit", true);
+    }
 
 
 </script>

@@ -17,7 +17,8 @@
             start time to get 'elapsed' time and write both to get 'remaining' time
             <br><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note:
                 These time stamps are in <a href="https://www.epochconverter.com">Unix Epoch</a> and are in
-                Milliseconds</i></p>
+                Milliseconds</i>
+        </p>
         <p><strong>&bull; Image Keys: </strong>These should be filled in with the asset keys that you set in <a
                 href="https://discord.com/developers/">Discord Developer
                 Portal</a></p>
@@ -36,9 +37,7 @@
                 fill this in with a random string if you want to show the 'Ask to join' button</i></p>
     </div><br>
     <div class="footer-div">
-        <form method="GET" action="/">
-            <button type="submit" class="back-btn">Back</button>
-        </form>
+        <button onclick="goHome()" class="back-btn">Back</button>
         <footer>
             <p>
                 <font color="#99AAB5" size="2" class="footer-font">Work By Amitoj Singh<br>View the source code here: <a
@@ -46,6 +45,14 @@
             </p>
         </footer>
     </div>
+
+    <script>
+        const { ipcRenderer } = window.require('electron');
+
+        function goHome() {
+            ipcRenderer.send("@window/navigate", "home.html");
+        }
+    </script>
 </body>
 
 </html>
