@@ -177,7 +177,6 @@ function updateRPC(data) {
                     else {
                         if (rpc.listeners('ready').length === 0) {
                             rpc.on('ready', function () {
-                                console.log("ready");
                                 if (RPC_INTERVAL) {
                                     clearInterval(RPC_INTERVAL);
                                 }
@@ -195,13 +194,6 @@ function updateRPC(data) {
     });
 }
 exports.updateRPC = updateRPC;
-function login(token) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/];
-        });
-    });
-}
 function cleanData(obj) {
     return __awaiter(this, void 0, void 0, function () {
         var n;

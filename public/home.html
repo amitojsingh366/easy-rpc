@@ -11,14 +11,24 @@
     <center>
 
         <div class="banner-error" style="display: none;" id="2-btn-err">
-            <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i>Not more than 2
-                buttons can be used!</p>
+            <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i>Not more than 2 buttons can be used!</p>
         </div>
 
         <div class="banner-running" style="display: none;" id="is-running-banner">
             <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i> RPC is running!</p>
         </div>
     </center><br>
+    <div>
+        <select name="profiles" id="profiles" onchange="loadProfile(document.getElementById('profiles').value)"></select>
+        <span onclick="createProfile()" style="margin: 0px;" class="clear-btn material-icons">
+            add_circle_outline
+        </span>
+        <span onclick="deleteProfile(document.getElementById('profiles').value)" style="margin: 0px;" class="clear-btn-del material-icons">
+            delete_outline
+        </span>
+    </div>
+    <br>
+    <input type="text" name="profileName" id="profileName" class="input-feild" placeholder="Profile Name">
     <input type="text" name="token" id="token" class="input-feild" placeholder="Client ID"><br>
     <input type="text" name="state" id="state" class="input-feild" placeholder="State">
     <input type="text" name="details" id="details" class="input-feild" placeholder="Details"><br>
@@ -47,11 +57,7 @@
     <button class="stop-btn" onclick="goQuit()">Quit</button>
     <footer>
         <p>
-            <font color="#99AAB5" size="2">Work By Amitoj Singh<br>View the source code here: <a
-                    href="https://shrt.amitoj.net/easy-rpc">https://shrt.amitoj.net/easy-rpc</a><br>Dont know
-                what's
-                going on? Check the <button class="a" onclick="goHelp()" href="">help section</button><br>
-                Dock to system tray: <label class="switch">
+            <font color="#99AAB5" size="2">Work By Amitoj Singh<br>View the source code here: <a href="https://shrt.amitoj.net/easy-rpc">https://shrt.amitoj.net/easy-rpc</a><br>Dont know what's going on? Check the <button class="a" onclick="goHelp()" href="">help section</button><br>                Dock to system tray: <label class="switch">
                     <input type="checkbox" onclick="updateShouldDock()" id="should-dock-checkbox">
                     <span class="slider round"></span>
                 </label><br>
@@ -61,193 +67,9 @@
         </p>
     </footer>
 </body>
+<script src="./home.js"></script>
 <script>
-    const { ipcRenderer } = window.require('electron');
-    let b1l = ""
-    let b1u = ""
-    let b2l = ""
-    let b2u = ""
-    let data = localStorage.getItem("@rpc/data");
-    data = JSON.parse(data);
-    if (data) {
-        document.getElementById("token").value = data.token
-        document.getElementById("state").value = data.state
-        document.getElementById("details").value = data.details
-        document.getElementById("startTimestamp").value = data.startTimestamp
-        document.getElementById("endTimestamp").value = data.endTimestamp
-        document.getElementById("largeImageKey").value = data.largeImageKey
-        document.getElementById("largeImageText").value = data.largeImageText
-        document.getElementById("smallImageKey").value = data.smallImageKey
-        document.getElementById("smallImageText").value = data.smallImageText
-        document.getElementById("partyId").value = data.partyId
-        document.getElementById("partySize").value = data.partySize
-        document.getElementById("partyMax").value = data.partyMax
-        document.getElementById("joinSecret").value = data.joinSecret
-        if (data.button_1_label) {
-            b1l = data.button_1_label;
-        }
-        if (data.button_1_url) {
-            b1u = data.button_1_url
-        }
-        if (data.button_2_label) {
-            b2l = data.button_2_label;
-        }
-        if (data.button_2_url) {
-            b2u = data.button_2_url
-        }
-
-        if (b1l && b1u) {
-            addButton();
-        }
-        if (b2l && b2u) {
-            addButton();
-        }
-    }
-
-    ipcRenderer.send("@rpc/status", "");
-    setInterval(() => {
-        ipcRenderer.send("@rpc/status", "");
-    }, 2500)
-
-    ipcRenderer.on("@rpc/status", (event, isRunning) => {
-        if (isRunning) {
-            document.getElementById("is-running-banner").style.display = 'inherit';
-        } else {
-            document.getElementById("is-running-banner").style.display = 'none';
-        }
-    })
-    if (localStorage.getItem("@app/shouldDock")) {
-        document.getElementById("should-dock-checkbox").checked = JSON.parse(localStorage.getItem("@app/shouldDock"));
-    } else {
-        document.getElementById("should-dock-checkbox").checked = true;
-    }
-
-    ipcRenderer.on("@app/shouldDock", (event, args) => {
-        ipcRenderer.send("@app/shouldDock", document.getElementById("should-dock-checkbox").checked);
-    });
-
-    function clearData() {
-        localStorage.clear();
-    }
-    function saveData() {
-        let data = {
-            token: document.getElementById("token").value,
-            state: document.getElementById("state").value,
-            details: document.getElementById("details").value,
-            startTimestamp: document.getElementById("startTimestamp").value,
-            endTimestamp: document.getElementById("endTimestamp").value,
-            largeImageKey: document.getElementById("largeImageKey").value,
-            largeImageText: document.getElementById("largeImageText").value,
-            smallImageKey: document.getElementById("smallImageKey").value,
-            smallImageText: document.getElementById("smallImageText").value,
-            partyId: document.getElementById("partyId").value,
-            partySize: document.getElementById("partySize").value,
-            partyMax: document.getElementById("partyMax").value,
-            joinSecret: document.getElementById("joinSecret").value,
-        }
-
-        if (document.getElementById("button_1_label") || document.getElementById("button_1_url")) {
-            data.button_1_label = document.getElementById("button_1_label").value;
-            data.button_1_url = document.getElementById("button_1_url").value;
-        }
-
-        if (document.getElementById("button_2_label") || document.getElementById("button_2_url")) {
-            data.button_2_label = document.getElementById("button_2_label").value;
-            data.button_2_url = document.getElementById("button_2_url").value;
-        }
-
-        localStorage.setItem("@rpc/data", JSON.stringify(data));
-    }
-
-    function submitData() {
-        let data = {
-            token: document.getElementById("token").value,
-            state: document.getElementById("state").value,
-            details: document.getElementById("details").value,
-            startTimestamp: document.getElementById("startTimestamp").value,
-            endTimestamp: document.getElementById("endTimestamp").value,
-            largeImageKey: document.getElementById("largeImageKey").value,
-            largeImageText: document.getElementById("largeImageText").value,
-            smallImageKey: document.getElementById("smallImageKey").value,
-            smallImageText: document.getElementById("smallImageText").value,
-            partyId: document.getElementById("partyId").value,
-            partySize: document.getElementById("partySize").value,
-            partyMax: document.getElementById("partyMax").value,
-            joinSecret: document.getElementById("joinSecret").value,
-        }
-
-        if (document.getElementById("button_1_label") || document.getElementById("button_1_url")) {
-            data.button_1_label = document.getElementById("button_1_label").value;
-            data.button_1_url = document.getElementById("button_1_url").value;
-        }
-
-        if (document.getElementById("button_2_label") || document.getElementById("button_2_url")) {
-            data.button_2_label = document.getElementById("button_2_label").value;
-            data.button_2_url = document.getElementById("button_2_url").value;
-        }
-
-        localStorage.setItem("@rpc/data", JSON.stringify(data));
-        ipcRenderer.send("@rpc/update", data);
-    }
-
-
-    function addButton() {
-        let btn_div = document.getElementById('buttons');
-        if (document.getElementById('button_1_label')) {
-            if (document.getElementById('button_2_label')) {
-                document.getElementById('2-btn-err').style.display = 'inherit';
-            } else {
-                btn_div.append(document.createElement('br'));
-                let input = document.createElement('input');
-                let input_2 = document.createElement('input');
-                input.type = 'text';
-                input.name = 'button_2_label';
-                input.id = 'button_2_label';
-                input.className = 'input-feild';
-                input.placeholder = 'Button Label';
-                input.value = b2l;
-                input_2.type = 'text';
-                input_2.name = 'button_2_url';
-                input_2.id = 'button_2_url';
-                input_2.className = 'input-feild';
-                input_2.placeholder = 'Button Url';
-                input_2.value = b2u;
-                btn_div.append(input);
-                btn_div.append(input_2);
-            }
-        } else {
-            let input = document.createElement('input');
-            let input_2 = document.createElement('input');
-            input.type = 'text';
-            input.name = 'button_1_label';
-            input.id = 'button_1_label';
-            input.className = 'input-feild';
-            input.placeholder = 'Button Label';
-            input.value = b1l;
-            input_2.type = 'text';
-            input_2.name = 'button_1_url';
-            input_2.id = 'button_1_url';
-            input_2.className = 'input-feild';
-            input_2.placeholder = 'Button Url';
-            input_2.value = b1u;
-            btn_div.append(input);
-            btn_div.append(input_2);
-        }
-    }
-    function goHelp() {
-        ipcRenderer.send("@window/navigate", "help.html");
-    }
-
-    function goQuit() {
-        ipcRenderer.send("@app/quit", true);
-    }
-
-    function updateShouldDock() {
-        localStorage.setItem("@app/shouldDock", document.getElementById("should-dock-checkbox").checked);
-        ipcRenderer.send("@app/shouldDock", document.getElementById("should-dock-checkbox").checked);
-    }
-
-
+    onLoad();
 </script>
 
 </html>

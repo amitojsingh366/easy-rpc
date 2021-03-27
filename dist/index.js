@@ -72,7 +72,6 @@ function createWindow() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    // Create the browser window.
                     exports.mainWindow = new electron_1.BrowserWindow({
                         height: 825,
                         width: 600,
@@ -82,10 +81,8 @@ function createWindow() {
                             contextIsolation: false
                         },
                     });
-                    // and load the index.html of the app.
                     return [4 /*yield*/, exports.mainWindow.loadFile(path.join(__dirname, "../public/home.html"))];
                 case 1:
-                    // and load the index.html of the app.
                     _a.sent();
                     handleLinks = function (event, url) {
                         event.preventDefault();
@@ -93,15 +90,13 @@ function createWindow() {
                     };
                     exports.mainWindow.webContents.on("new-window", handleLinks);
                     exports.mainWindow.webContents.on("will-navigate", handleLinks);
+                    electron_updater_1.autoUpdater.checkForUpdatesAndNotify();
                     return [2 /*return*/];
             }
         });
     });
 }
 exports.createWindow = createWindow;
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 if (!instanceLock) {
     electron_1.app.quit();
 }
@@ -112,10 +107,7 @@ else {
                 case 0: return [4 /*yield*/, createWindow()];
                 case 1:
                     _a.sent();
-                    electron_updater_1.autoUpdater.checkForUpdatesAndNotify();
                     electron_1.app.on("activate", function () {
-                        // On macOS it's common to re-create a window in the app when the
-                        // dock icon is clicked and there are no other windows open.
                         if (electron_1.BrowserWindow.getAllWindows().length === 0)
                             createWindow();
                     });
@@ -152,9 +144,6 @@ else {
         }
     });
 }
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 electron_1.app.on("window-all-closed", function () {
     if (presence_1.RPC_STARTED && exports.commons.shouldDock) {
         return;
@@ -163,5 +152,3 @@ electron_1.app.on("window-all-closed", function () {
         electron_1.app.quit();
     }
 });
-// In this file you can include the rest of your app"s specific main process
-// code. You can also put them in separate files and require them here.
