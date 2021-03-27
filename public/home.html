@@ -38,7 +38,9 @@
     <div id="buttons"></div>
     <br><br>
 
+    <button onclick="saveData()" class="save-btn">Save</button>
     <button onclick="submitData()" class="start-btn">Start</button>
+
     <br><br>
 
 
@@ -93,7 +95,13 @@
         if (data.button_2_url) {
             b2u = data.button_2_url
         }
-        console.log(data);
+
+        if (b1l && b1u) {
+            addButton();
+        }
+        if (b2l && b2u) {
+            addButton();
+        }
     }
 
     ipcRenderer.send("@rpc/status", "");
@@ -121,6 +129,36 @@
     function clearData() {
         localStorage.clear();
     }
+    function saveData() {
+        let data = {
+            token: document.getElementById("token").value,
+            state: document.getElementById("state").value,
+            details: document.getElementById("details").value,
+            startTimestamp: document.getElementById("startTimestamp").value,
+            endTimestamp: document.getElementById("endTimestamp").value,
+            largeImageKey: document.getElementById("largeImageKey").value,
+            largeImageText: document.getElementById("largeImageText").value,
+            smallImageKey: document.getElementById("smallImageKey").value,
+            smallImageText: document.getElementById("smallImageText").value,
+            partyId: document.getElementById("partyId").value,
+            partySize: document.getElementById("partySize").value,
+            partyMax: document.getElementById("partyMax").value,
+            joinSecret: document.getElementById("joinSecret").value,
+        }
+
+        if (document.getElementById("button_1_label") || document.getElementById("button_1_url")) {
+            data.button_1_label = document.getElementById("button_1_label").value;
+            data.button_1_url = document.getElementById("button_1_url").value;
+        }
+
+        if (document.getElementById("button_2_label") || document.getElementById("button_2_url")) {
+            data.button_2_label = document.getElementById("button_2_label").value;
+            data.button_2_url = document.getElementById("button_2_url").value;
+        }
+
+        localStorage.setItem("@rpc/data", JSON.stringify(data));
+    }
+
     function submitData() {
         let data = {
             token: document.getElementById("token").value,

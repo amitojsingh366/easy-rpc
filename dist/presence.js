@@ -55,94 +55,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.startHandler = exports.RPC_STARTED = void 0;
+exports.updateRPC = exports.startHandler = exports.RPC_STARTED = void 0;
 var Discord = __importStar(require("discord-rpc"));
 var electron_1 = require("electron");
 var path = __importStar(require("path"));
 var index_1 = require("./index");
-var rpc = new Discord.Client({ transport: 'ipc' });
 exports.RPC_STARTED = false;
 var PREV_TOKEN = "";
 var buttons;
+var RPC_INTERVAL;
+var rpc = new Discord.Client({ transport: 'ipc' });
 function startHandler() {
     return __awaiter(this, void 0, void 0, function () {
         var _this = this;
         return __generator(this, function (_a) {
             electron_1.ipcMain.on("@rpc/update", function (event, data) { return __awaiter(_this, void 0, void 0, function () {
-                var _a, _b, presenceData;
-                return __generator(this, function (_c) {
-                    switch (_c.label) {
-                        case 0:
-                            if (data.button_1_label) {
-                                if (!buttons) {
-                                    buttons = [{ label: data.button_1_label, url: data.button_1_url }];
-                                }
-                                else {
-                                    buttons.push({ label: data.button_1_label, url: data.button_1_url });
-                                }
-                                delete data.button_1_label;
-                                delete data.button_1_url;
-                            }
-                            if (data.button_2_label) {
-                                if (!buttons) {
-                                    buttons = [{ label: data.button_2_label, url: data.button_2_url }];
-                                }
-                                else {
-                                    buttons.push({ label: data.button_2_label, url: data.button_2_url });
-                                }
-                                delete data.button_2_label;
-                                delete data.button_2_url;
-                            }
-                            if (data.startTimestamp) {
-                                data.startTimestamp = Number(data.startTimestamp);
-                            }
-                            if (data.endTimestamp) {
-                                data.endTimestamp = Number(data.endTimestamp);
-                            }
-                            if (data.partySize) {
-                                data.partySize = Number(data.partySize);
-                            }
-                            if (data.partyMax) {
-                                data.partyMax = Number(data.partyMax);
-                            }
-                            data.instance = true;
-                            if (!(data.partyId && data.partySize && data.partyMax && data.joinSecret)) return [3 /*break*/, 3];
-                            _a = data;
-                            return [4 /*yield*/, randomString(8)];
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, updateRPC(data)];
                         case 1:
-                            _a.matchSecret = _c.sent();
-                            _b = data;
-                            return [4 /*yield*/, randomString(8)];
-                        case 2:
-                            _b.spectateSecret = _c.sent();
-                            delete data.buttons;
-                            _c.label = 3;
-                        case 3:
-                            if (buttons) {
-                                data.buttons = buttons;
-                            }
-                            return [4 /*yield*/, cleanData(data)];
-                        case 4:
-                            presenceData = _c.sent();
-                            if (exports.RPC_STARTED == false || data.token != PREV_TOKEN) {
-                                rpc.login({ clientId: presenceData.token }).catch(console.error);
-                            }
-                            delete presenceData.token;
-                            if (exports.RPC_STARTED) {
-                                rpc.setActivity(presenceData);
-                                if (!index_1.mainWindow.isDestroyed()) {
-                                    index_1.mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
-                                }
-                            }
-                            else {
-                                rpc.on('ready', function () {
-                                    exports.RPC_STARTED = true;
-                                    rpc.setActivity(presenceData);
-                                    if (!index_1.mainWindow.isDestroyed()) {
-                                        index_1.mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
-                                    }
-                                });
-                            }
+                            _a.sent();
                             return [2 /*return*/];
                     }
                 });
@@ -162,6 +94,114 @@ function startHandler() {
     });
 }
 exports.startHandler = startHandler;
+function updateRPC(data) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, _b, a, presenceData;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    if (data.button_1_label) {
+                        if (!buttons) {
+                            buttons = [{ label: data.button_1_label, url: data.button_1_url }];
+                        }
+                        else {
+                            buttons.push({ label: data.button_1_label, url: data.button_1_url });
+                        }
+                        delete data.button_1_label;
+                        delete data.button_1_url;
+                    }
+                    if (data.button_2_label) {
+                        if (!buttons) {
+                            buttons = [{ label: data.button_2_label, url: data.button_2_url }];
+                        }
+                        else {
+                            buttons.push({ label: data.button_2_label, url: data.button_2_url });
+                        }
+                        delete data.button_2_label;
+                        delete data.button_2_url;
+                    }
+                    if (data.startTimestamp) {
+                        data.startTimestamp = Number(data.startTimestamp);
+                    }
+                    if (data.endTimestamp) {
+                        data.endTimestamp = Number(data.endTimestamp);
+                    }
+                    if (data.partySize) {
+                        data.partySize = Number(data.partySize);
+                    }
+                    if (data.partyMax) {
+                        data.partyMax = Number(data.partyMax);
+                    }
+                    data.instance = true;
+                    if (!(data.partyId && data.partySize && data.partyMax && data.joinSecret)) return [3 /*break*/, 3];
+                    _a = data;
+                    return [4 /*yield*/, randomString(8)];
+                case 1:
+                    _a.matchSecret = _c.sent();
+                    _b = data;
+                    return [4 /*yield*/, randomString(8)];
+                case 2:
+                    _b.spectateSecret = _c.sent();
+                    delete data.buttons;
+                    _c.label = 3;
+                case 3:
+                    if (buttons) {
+                        a = buttons.slice(0, 2);
+                        buttons = a;
+                        data.buttons = buttons;
+                    }
+                    return [4 /*yield*/, cleanData(data)];
+                case 4:
+                    presenceData = _c.sent();
+                    if (exports.RPC_STARTED == false || data.token != PREV_TOKEN) {
+                        rpc.login({ clientId: presenceData.token }).catch(function (e) {
+                            // console.log("Error");
+                            // if (!RPC_INTERVAL) {
+                            //     console.log("setInterval")
+                            //     RPC_INTERVAL = setInterval(() => {
+                            //         updateRPC(data);
+                            //     }, 2000);
+                            // }
+                            // return false;
+                            console.log("error");
+                            console.log(e);
+                        });
+                    }
+                    delete presenceData.token;
+                    if (exports.RPC_STARTED) {
+                        rpc.setActivity(presenceData);
+                        if (!index_1.mainWindow.isDestroyed()) {
+                            index_1.mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
+                        }
+                    }
+                    else {
+                        if (rpc.listeners('ready').length === 0) {
+                            rpc.on('ready', function () {
+                                console.log("ready");
+                                if (RPC_INTERVAL) {
+                                    clearInterval(RPC_INTERVAL);
+                                }
+                                exports.RPC_STARTED = true;
+                                rpc.setActivity(presenceData);
+                                if (!index_1.mainWindow.isDestroyed()) {
+                                    index_1.mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
+                                }
+                            });
+                        }
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.updateRPC = updateRPC;
+function login(token) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/];
+        });
+    });
+}
 function cleanData(obj) {
     return __awaiter(this, void 0, void 0, function () {
         var n;

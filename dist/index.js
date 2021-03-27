@@ -62,6 +62,7 @@ var electron_updater_1 = require("electron-updater");
 var presence_1 = require("./presence");
 var tray_1 = require("./tray");
 var tray;
+var instanceLock = electron_1.app.requestSingleInstanceLock();
 exports.commons = {
     shouldDock: true,
 };
@@ -101,37 +102,56 @@ exports.createWindow = createWindow;
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-electron_1.app.on("ready", function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, createWindow()];
-            case 1:
-                _a.sent();
-                electron_updater_1.autoUpdater.checkForUpdatesAndNotify();
-                electron_1.app.on("activate", function () {
-                    // On macOS it's common to re-create a window in the app when the
-                    // dock icon is clicked and there are no other windows open.
-                    if (electron_1.BrowserWindow.getAllWindows().length === 0)
-                        createWindow();
-                });
-                return [4 /*yield*/, presence_1.startHandler()];
-            case 2:
-                _a.sent();
-                tray = new electron_1.Tray(path.join(__dirname, "../icons/tray.png"));
-                return [4 /*yield*/, tray_1.HandleTray(tray)];
-            case 3:
-                _a.sent();
-                exports.mainWindow.webContents.send("@app/shouldDock", "");
-                electron_1.ipcMain.on("@app/shouldDock", function (event, shouldDock) {
-                    exports.commons.shouldDock = shouldDock;
-                });
-                electron_1.ipcMain.on("@app/quit", function (event, args) {
-                    electron_1.app.quit();
-                });
-                return [2 /*return*/];
+if (!instanceLock) {
+    electron_1.app.quit();
+}
+else {
+    electron_1.app.on("ready", function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, createWindow()];
+                case 1:
+                    _a.sent();
+                    electron_updater_1.autoUpdater.checkForUpdatesAndNotify();
+                    electron_1.app.on("activate", function () {
+                        // On macOS it's common to re-create a window in the app when the
+                        // dock icon is clicked and there are no other windows open.
+                        if (electron_1.BrowserWindow.getAllWindows().length === 0)
+                            createWindow();
+                    });
+                    return [4 /*yield*/, presence_1.startHandler()];
+                case 2:
+                    _a.sent();
+                    tray = new electron_1.Tray(path.join(__dirname, "../icons/tray.png"));
+                    return [4 /*yield*/, tray_1.HandleTray(tray)];
+                case 3:
+                    _a.sent();
+                    exports.mainWindow.webContents.send("@app/shouldDock", "");
+                    electron_1.ipcMain.on("@app/shouldDock", function (event, shouldDock) {
+                        exports.commons.shouldDock = shouldDock;
+                    });
+                    electron_1.ipcMain.on("@app/quit", function (event, args) {
+                        electron_1.app.quit();
+                    });
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    electron_1.app.on("second-instance", function (event, argv, workingDirectory) {
+        if (exports.mainWindow) {
+            if (exports.mainWindow.isMinimized()) {
+                exports.mainWindow.restore();
+                exports.mainWindow.focus();
+            }
+            else if (exports.mainWindow.isDestroyed()) {
+                createWindow();
+            }
+        }
+        else {
+            createWindow();
         }
     });
-}); });
+}
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.

@@ -3,80 +3,18 @@ import { ipcMain, BrowserWindow } from 'electron';
 import * as path from "path";
 import { mainWindow } from "./index"
 
-const rpc = new Discord.Client({ transport: 'ipc' });
 
 export let RPC_STARTED = false;
 let PREV_TOKEN = "";
 let buttons: [{ label: string, url: string }];
 
+let RPC_INTERVAL: NodeJS.Timeout;
+const rpc = new Discord.Client({ transport: 'ipc' });
+
+
 export async function startHandler() {
     ipcMain.on("@rpc/update", async (event, data) => {
-        if (data.button_1_label) {
-            if (!buttons) {
-                buttons = [{ label: data.button_1_label, url: data.button_1_url }];
-            } else {
-                buttons.push({ label: data.button_1_label, url: data.button_1_url });
-            }
-
-            delete data.button_1_label;
-            delete data.button_1_url;
-        }
-        if (data.button_2_label) {
-            if (!buttons) {
-                buttons = [{ label: data.button_2_label, url: data.button_2_url }];
-            } else {
-                buttons.push({ label: data.button_2_label, url: data.button_2_url });
-            }
-
-            delete data.button_2_label;
-            delete data.button_2_url;
-        }
-
-
-
-        if (data.startTimestamp) {
-            data.startTimestamp = Number(data.startTimestamp)
-        }
-        if (data.endTimestamp) {
-            data.endTimestamp = Number(data.endTimestamp)
-        }
-        if (data.partySize) {
-            data.partySize = Number(data.partySize)
-        }
-        if (data.partyMax) {
-            data.partyMax = Number(data.partyMax)
-        }
-        data.instance = true;
-
-        if (data.partyId && data.partySize && data.partyMax && data.joinSecret) {
-            data.matchSecret = await randomString(8);
-            data.spectateSecret = await randomString(8);
-            delete data.buttons;
-        }
-        if (buttons) {
-            data.buttons = buttons;
-        }
-        let presenceData = await cleanData(data);
-        if (RPC_STARTED == false || data.token != PREV_TOKEN) {
-            rpc.login({ clientId: presenceData.token }).catch(console.error);
-        }
-        delete presenceData.token;
-
-        if (RPC_STARTED) {
-            rpc.setActivity(presenceData);
-            if (!mainWindow.isDestroyed()) {
-                mainWindow.webContents.send("@rpc/status", RPC_STARTED);
-            }
-        } else {
-            rpc.on('ready', () => {
-                RPC_STARTED = true;
-                rpc.setActivity(presenceData);
-                if (!mainWindow.isDestroyed()) {
-                    mainWindow.webContents.send("@rpc/status", RPC_STARTED);
-                }
-            });
-        }
-
+        await updateRPC(data);
     });
 
     ipcMain.on("@window/navigate", (event, file) => {
@@ -90,6 +28,91 @@ export async function startHandler() {
             mainWindow.webContents.send("@rpc/status", RPC_STARTED);
         }
     })
+}
+
+
+export async function updateRPC(data: any) {
+    if (data.button_1_label) {
+        if (!buttons) {
+            buttons = [{ label: data.button_1_label, url: data.button_1_url }];
+        } else {
+            buttons.push({ label: data.button_1_label, url: data.button_1_url });
+        }
+
+        delete data.button_1_label;
+        delete data.button_1_url;
+    }
+    if (data.button_2_label) {
+        if (!buttons) {
+            buttons = [{ label: data.button_2_label, url: data.button_2_url }];
+        } else {
+            buttons.push({ label: data.button_2_label, url: data.button_2_url });
+        }
+
+        delete data.button_2_label;
+        delete data.button_2_url;
+    }
+
+    if (data.startTimestamp) {
+        data.startTimestamp = Number(data.startTimestamp)
+    }
+    if (data.endTimestamp) {
+        data.endTimestamp = Number(data.endTimestamp)
+    }
+    if (data.partySize) {
+        data.partySize = Number(data.partySize)
+    }
+    if (data.partyMax) {
+        data.partyMax = Number(data.partyMax)
+    }
+    data.instance = true;
+
+    if (data.partyId && data.partySize && data.partyMax && data.joinSecret) {
+        data.matchSecret = await randomString(8);
+        data.spectateSecret = await randomString(8);
+        delete data.buttons;
+    }
+    if (buttons) {
+        let a: any = buttons.slice(0, 2);
+        buttons = a;
+        data.buttons = buttons;
+    }
+    let presenceData = await cleanData(data);
+    if (RPC_STARTED == false || data.token != PREV_TOKEN) {
+        rpc.login({ clientId: presenceData.token }).catch((e) => {
+            // console.log("Error");
+            // if (!RPC_INTERVAL) {
+            //     console.log("setInterval")
+            //     RPC_INTERVAL = setInterval(() => {
+            //         updateRPC(data);
+            //     }, 2000);
+            // }
+            // return false;
+            console.log("error");
+            console.log(e);
+        })
+
+    }
+    delete presenceData.token;
+    if (RPC_STARTED) {
+        rpc.setActivity(presenceData);
+        if (!mainWindow.isDestroyed()) {
+            mainWindow.webContents.send("@rpc/status", RPC_STARTED);
+        }
+    } else {
+        if (rpc.listeners('ready').length === 0) {
+            rpc.on('ready', () => {
+                if (RPC_INTERVAL) {
+                    clearInterval(RPC_INTERVAL);
+                }
+                RPC_STARTED = true;
+                rpc.setActivity(presenceData);
+                if (!mainWindow.isDestroyed()) {
+                    mainWindow.webContents.send("@rpc/status", RPC_STARTED);
+                }
+            });
+        }
+    }
 }
 
 
