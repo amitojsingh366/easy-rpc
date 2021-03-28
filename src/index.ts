@@ -56,10 +56,10 @@ if (!instanceLock) {
 } else {
     app.on("second-instance", (event, argv, workingDirectory) => {
         if (mainWindow) {
-            if (mainWindow.isMinimized()) {
-                mainWindow.restore();
-            } else if (mainWindow.isDestroyed()) {
+            if (mainWindow.isDestroyed()) {
                 createWindow();
+            } else if (mainWindow.isMinimized()) {
+                mainWindow.restore();
             }
             mainWindow.focus();
         } else {
