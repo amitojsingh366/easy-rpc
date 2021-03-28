@@ -66,7 +66,7 @@ var index_1 = require("./index");
 var electron_prompt_1 = __importDefault(require("electron-prompt"));
 exports.RPC_STARTED = false;
 var PREV_TOKEN = "";
-var buttons;
+var buttons = [];
 var RPC_INTERVAL;
 var rpc = new Discord.Client({ transport: 'ipc' });
 function startHandler() {
@@ -119,6 +119,9 @@ function updateRPC(data) {
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
+                    if (buttons) {
+                        buttons.length = 0;
+                    }
                     if (data.button_1_label) {
                         if (!buttons) {
                             buttons = [{ label: data.button_1_label, url: data.button_1_url }];

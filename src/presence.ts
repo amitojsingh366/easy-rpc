@@ -6,7 +6,7 @@ import prompt from 'electron-prompt';
 
 export let RPC_STARTED = false;
 let PREV_TOKEN = "";
-let buttons: [{ label: string, url: string }];
+let buttons: any[] = [];
 
 let RPC_INTERVAL: NodeJS.Timeout;
 const rpc = new Discord.Client({ transport: 'ipc' });
@@ -49,6 +49,9 @@ export async function startHandler() {
 
 
 export async function updateRPC(data: any) {
+    if (buttons) {
+        buttons.length = 0;
+    }
     if (data.button_1_label) {
         if (!buttons) {
             buttons = [{ label: data.button_1_label, url: data.button_1_url }];
