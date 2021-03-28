@@ -97,47 +97,47 @@ function createWindow() {
     });
 }
 exports.createWindow = createWindow;
+electron_1.app.on("ready", function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, createWindow()];
+            case 1:
+                _a.sent();
+                electron_1.app.on("activate", function () {
+                    if (electron_1.BrowserWindow.getAllWindows().length === 0)
+                        createWindow();
+                });
+                return [4 /*yield*/, presence_1.startHandler()];
+            case 2:
+                _a.sent();
+                tray = new electron_1.Tray(path.join(__dirname, "../icons/tray.png"));
+                return [4 /*yield*/, tray_1.HandleTray(tray)];
+            case 3:
+                _a.sent();
+                exports.mainWindow.webContents.send("@app/shouldDock", "");
+                electron_1.ipcMain.on("@app/shouldDock", function (event, shouldDock) {
+                    exports.commons.shouldDock = shouldDock;
+                });
+                electron_1.ipcMain.on("@app/quit", function (event, args) {
+                    electron_1.app.quit();
+                });
+                return [2 /*return*/];
+        }
+    });
+}); });
 if (!instanceLock) {
     electron_1.app.quit();
 }
 else {
-    electron_1.app.on("ready", function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, createWindow()];
-                case 1:
-                    _a.sent();
-                    electron_1.app.on("activate", function () {
-                        if (electron_1.BrowserWindow.getAllWindows().length === 0)
-                            createWindow();
-                    });
-                    return [4 /*yield*/, presence_1.startHandler()];
-                case 2:
-                    _a.sent();
-                    tray = new electron_1.Tray(path.join(__dirname, "../icons/tray.png"));
-                    return [4 /*yield*/, tray_1.HandleTray(tray)];
-                case 3:
-                    _a.sent();
-                    exports.mainWindow.webContents.send("@app/shouldDock", "");
-                    electron_1.ipcMain.on("@app/shouldDock", function (event, shouldDock) {
-                        exports.commons.shouldDock = shouldDock;
-                    });
-                    electron_1.ipcMain.on("@app/quit", function (event, args) {
-                        electron_1.app.quit();
-                    });
-                    return [2 /*return*/];
-            }
-        });
-    }); });
     electron_1.app.on("second-instance", function (event, argv, workingDirectory) {
         if (exports.mainWindow) {
             if (exports.mainWindow.isMinimized()) {
                 exports.mainWindow.restore();
-                exports.mainWindow.focus();
             }
             else if (exports.mainWindow.isDestroyed()) {
                 createWindow();
             }
+            exports.mainWindow.focus();
         }
         else {
             createWindow();

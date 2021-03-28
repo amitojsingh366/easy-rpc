@@ -34,33 +34,34 @@ export async function createWindow() {
     autoUpdater.checkForUpdatesAndNotify();
 }
 
+app.on("ready", async () => {
+    await createWindow();
+    app.on("activate", function () {
+        if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    });
+    await startHandler()
+    tray = new Tray(path.join(__dirname, `../icons/tray.png`));
+    await HandleTray(tray);
+    mainWindow.webContents.send("@app/shouldDock", "");
+    ipcMain.on("@app/shouldDock", (event, shouldDock) => {
+        commons.shouldDock = shouldDock;
+    })
+    ipcMain.on("@app/quit", (event, args) => {
+        app.quit();
+    })
+});
+
 if (!instanceLock) {
     app.quit();
 } else {
-    app.on("ready", async () => {
-        await createWindow();
-        app.on("activate", function () {
-            if (BrowserWindow.getAllWindows().length === 0) createWindow();
-        });
-        await startHandler()
-        tray = new Tray(path.join(__dirname, `../icons/tray.png`));
-        await HandleTray(tray);
-        mainWindow.webContents.send("@app/shouldDock", "");
-        ipcMain.on("@app/shouldDock", (event, shouldDock) => {
-            commons.shouldDock = shouldDock;
-        })
-        ipcMain.on("@app/quit", (event, args) => {
-            app.quit();
-        })
-    });
     app.on("second-instance", (event, argv, workingDirectory) => {
         if (mainWindow) {
             if (mainWindow.isMinimized()) {
                 mainWindow.restore();
-                mainWindow.focus();
             } else if (mainWindow.isDestroyed()) {
                 createWindow();
             }
+            mainWindow.focus();
         } else {
             createWindow();
         }
