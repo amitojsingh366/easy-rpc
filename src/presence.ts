@@ -2,7 +2,7 @@ import * as Discord from 'discord-rpc';
 import { ipcMain, BrowserWindow } from 'electron';
 import * as path from "path";
 import { mainWindow } from "./index"
-
+import prompt from 'electron-prompt';
 
 export let RPC_STARTED = false;
 let PREV_TOKEN = "";
@@ -27,7 +27,24 @@ export async function startHandler() {
         if (!mainWindow.isDestroyed()) {
             mainWindow.webContents.send("@rpc/status", RPC_STARTED);
         }
-    })
+    });
+
+    ipcMain.on("@rpc/importPrompt", (event, args) => {
+
+        prompt({
+            title: 'Import Profile',
+            label: 'Profile ID to import: ',
+            value: '',
+            inputAttrs: {
+                type: 'text'
+            },
+            type: 'input'
+        }).then((r: string) => {
+            if (r !== null) {
+                mainWindow.webContents.send("@rpc/importPrompt", r);
+            }
+        }).catch(console.error);
+    });
 }
 
 

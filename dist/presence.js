@@ -54,12 +54,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateRPC = exports.startHandler = exports.RPC_STARTED = void 0;
 var Discord = __importStar(require("discord-rpc"));
 var electron_1 = require("electron");
 var path = __importStar(require("path"));
 var index_1 = require("./index");
+var electron_prompt_1 = __importDefault(require("electron-prompt"));
 exports.RPC_STARTED = false;
 var PREV_TOKEN = "";
 var buttons;
@@ -88,6 +92,21 @@ function startHandler() {
                 if (!index_1.mainWindow.isDestroyed()) {
                     index_1.mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
                 }
+            });
+            electron_1.ipcMain.on("@rpc/importPrompt", function (event, args) {
+                electron_prompt_1.default({
+                    title: 'Import Profile',
+                    label: 'Profile ID to import: ',
+                    value: '',
+                    inputAttrs: {
+                        type: 'text'
+                    },
+                    type: 'input'
+                }).then(function (r) {
+                    if (r !== null) {
+                        index_1.mainWindow.webContents.send("@rpc/importPrompt", r);
+                    }
+                }).catch(console.error);
             });
             return [2 /*return*/];
         });

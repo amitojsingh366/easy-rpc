@@ -11,19 +11,38 @@
     <center>
 
         <div class="banner-error" style="display: none;" id="2-btn-err">
-            <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i>Not more than 2 buttons can be used!</p>
+            <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i>Not more than 2
+                buttons can be used!</p>
         </div>
 
         <div class="banner-running" style="display: none;" id="is-running-banner">
             <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i> RPC is running!</p>
         </div>
+
+        <div class="banner-running" style="display: none;" id="clipboard-copied-banner">
+            <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i>Profile ID has been
+                copied to clipboard</p>
+        </div>
+        <div class="banner-running" style="display: none;" id="import-success-banner">
+            <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i>Profile has been
+                sucessfully imported!</p>
+        </div>
     </center><br>
     <div>
-        <select name="profiles" id="profiles" onchange="loadProfile(document.getElementById('profiles').value)"></select>
+        <select name="profiles" id="profiles"
+            onchange="loadProfile(document.getElementById('profiles').value)"></select>
         <span onclick="createProfile()" style="margin: 0px;" class="clear-btn material-icons">
             add_circle_outline
         </span>
-        <span onclick="deleteProfile(document.getElementById('profiles').value)" style="margin: 0px;" class="clear-btn-del material-icons">
+        <span onclick="exportProfile(document.getElementById('profiles').value)" style="margin: 0px;"
+            class="clear-btn material-icons">
+            file_upload
+        </span>
+        <span onclick="importProfile()" style="margin: 0px;" class="clear-btn material-icons">
+            file_download
+        </span>
+        <span onclick="deleteProfile(document.getElementById('profiles').value)" style="margin: 0px;"
+            class="clear-btn-del material-icons">
             delete_outline
         </span>
     </div>
@@ -57,7 +76,10 @@
     <button class="stop-btn" onclick="goQuit()">Quit</button>
     <footer>
         <p>
-            <font color="#99AAB5" size="2">Work By Amitoj Singh<br>View the source code here: <a href="https://shrt.amitoj.net/easy-rpc">https://shrt.amitoj.net/easy-rpc</a><br>Dont know what's going on? Check the <button class="a" onclick="goHelp()" href="">help section</button><br>                Dock to system tray: <label class="switch">
+            <font color="#99AAB5" size="2">Work By Amitoj Singh<br>View the source code here: <a
+                    href="https://shrt.amitoj.net/easy-rpc">https://shrt.amitoj.net/easy-rpc</a><br>Dont know what's
+                going on? Check the <button class="a" onclick="goHelp()" href="">help section</button><br> Dock to
+                system tray: <label class="switch">
                     <input type="checkbox" onclick="updateShouldDock()" id="should-dock-checkbox">
                     <span class="slider round"></span>
                 </label><br>
@@ -81,18 +103,22 @@
         let selector = document.getElementById("profiles");
         selector.options.length = 0;
         if (!localStorage.getItem("@rpc/profiles")) {
+            let nid = randomString(32);
             let p = [{
-                id: "default",
+                id: nid,
                 name: "Default Profile",
+                default: true,
             }];
             localStorage.setItem("@rpc/profiles", JSON.stringify(p));
         }
         let profiles = localStorage.getItem("@rpc/profiles");
         profiles = JSON.parse(profiles);
         if (profiles.length === 0) {
+            let nid = randomString(32);
             profiles = [{
-                id: "default",
+                id: nid,
                 name: "Default Profile",
+                default: true,
             }]
         }
         for (let index = 0; index < profiles.length; index++) {
@@ -184,7 +210,7 @@
     }
 
     function createProfile() {
-        let id = randomString(8);
+        let id = randomString(32);
         let profiles = localStorage.getItem("@rpc/profiles");
         profiles = JSON.parse(profiles);
         let profile = {
@@ -195,6 +221,62 @@
         localStorage.setItem("@rpc/profiles", JSON.stringify(profiles));
         loadProfiles(id);
     }
+
+    function exportProfile(id) {
+        let profiles = localStorage.getItem("@rpc/profiles");
+        profiles = JSON.parse(profiles);
+        let profile = profiles.find((p) => p.id == id);
+        let profileData = JSON.stringify(profile);
+        profileData = btoa(encodeURIComponent(profileData));
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", `https://easy-rpc.amitoj.net/new-profile.php?profileID=${profile.id}&name=${profile.name}&data=${profileData}`);
+        xhr.send();
+        xhr.onreadystatechange = () => {
+            let res = xhr.responseText
+            if (res) {
+                res = JSON.parse(res)
+                if (res.code == 200) {
+                    copyTextToClipboard(profile.id);
+                    document.getElementById("clipboard-copied-banner").style.display = 'inherit';
+                }
+            }
+        }
+    }
+
+    function importProfile() {
+        ipcRenderer.send("@rpc/importPrompt");
+        ipcRenderer.on("@rpc/importPrompt", importFromID);
+        function importFromID(event, profileID) {
+            ipcRenderer.removeListener("@rpc/importPrompt", importFromID);
+            const xhr = new XMLHttpRequest();
+            let c = 0;
+            xhr.open("GET", `https://easy-rpc.amitoj.net/get-profile.php?id=${profileID}`);
+            xhr.send();
+            xhr.onreadystatechange = () => {
+                let res = xhr.responseText
+                if (res && c == 0) {
+                    c++;
+                    res = JSON.parse(res)
+                    if (res.code == 200) {
+                        let data = decodeURIComponent(atob(res.data));
+                        data = JSON.parse(data);
+                        let profiles = localStorage.getItem("@rpc/profiles");
+                        profiles = JSON.parse(profiles);
+                        if (profiles.find((p) => p.id == data.id)) {
+                            let i = profiles.find((p) => p.id == data.id);
+                            profiles.splice(i, 1);
+                        }
+                        profiles.push(data);
+                        localStorage.setItem("@rpc/profiles", JSON.stringify(profiles));
+                        loadProfiles(data.id);
+                        document.getElementById("import-success-banner").style.display = 'inherit';
+                    }
+                }
+            }
+        }
+    }
+
+
 
     function deleteProfile(id) {
         let profiles = localStorage.getItem("@rpc/profiles");
@@ -275,10 +357,14 @@
         if (data) {
             profile.data = data;
         }
+        if (profile.id == "default") {
+            profile.id = randomString(32);
+        }
         profile.name = document.getElementById("profileName").value;
         console.log(profiles);
         localStorage.setItem("@rpc/profiles", JSON.stringify(profiles));
         localStorage.setItem("@app/lastProfile", profile.id);
+        loadProfiles(profile.id);
     }
 
     function submitData() {
@@ -315,11 +401,15 @@
         if (data) {
             profile.data = data;
         }
-        console.log(profiles);
+        if (profile.id == "default") {
+            profile.id = randomString(32);
+        }
         profile.name = document.getElementById("profileName").value;
+        console.log(profiles);
         localStorage.setItem("@rpc/profiles", JSON.stringify(profiles));
         localStorage.setItem("@app/lastProfile", profile.id);
         ipcRenderer.send("@rpc/update", data);
+        loadProfiles(profile.id);
     }
 
 
@@ -327,7 +417,7 @@
         let btn_div = document.getElementById('buttons');
         if (document.getElementById('button_1_label')) {
             if (document.getElementById('button_2_label')) {
-                document.getElementById('2-btn-err').style.display = 'inherit';
+                // document.getElementById('2-btn-err').style.display = 'inherit';
             } else {
                 btn_div.append(document.createElement('br'));
                 let input = document.createElement('input');
@@ -386,6 +476,41 @@
         var result = '';
         for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
         return result;
+    }
+
+    function fallbackCopyTextToClipboard(text) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+
+        // Avoid scrolling to bottom
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Fallback: Copying text command was ' + msg);
+        } catch (err) {
+            console.error('Fallback: Oops, unable to copy', err);
+        }
+
+        document.body.removeChild(textArea);
+    }
+    function copyTextToClipboard(text) {
+        if (!navigator.clipboard) {
+            fallbackCopyTextToClipboard(text);
+            return;
+        }
+        navigator.clipboard.writeText(text).then(function () {
+            console.log('Async: Copying to clipboard was successful!');
+        }, function (err) {
+            console.error('Async: Could not copy text: ', err);
+        });
     }
 </script>
 <script>
