@@ -139,6 +139,18 @@
         let profiles = localStorage.getItem("@rpc/profiles");
         profiles = JSON.parse(profiles);
         let profile = profiles.find((p) => p.id == profileID);
+        if (document.getElementById("button_1_label")) {
+            document.getElementById("button_1_label").remove();
+        }
+        if (document.getElementById("button_1_url")) {
+            document.getElementById("button_1_url").remove();
+        }
+        if (document.getElementById("button_2_label")) {
+            document.getElementById("button_2_label").remove();
+        }
+        if (document.getElementById("button_2_url")) {
+            document.getElementById("button_2_url").remove();
+        }
         if (profile.data) {
             let data = profile.data;
             document.getElementById("profileName").value = profile.name;
@@ -194,18 +206,6 @@
             b1u = "";
             b2l = "";
             b2u = "";
-            if (document.getElementById("button_1_label")) {
-                document.getElementById("button_1_label").remove();
-            }
-            if (document.getElementById("button_1_url")) {
-                document.getElementById("button_1_url").remove();
-            }
-            if (document.getElementById("button_2_label")) {
-                document.getElementById("button_2_label").remove();
-            }
-            if (document.getElementById("button_2_url")) {
-                document.getElementById("button_2_url").remove();
-            }
         }
     }
 
