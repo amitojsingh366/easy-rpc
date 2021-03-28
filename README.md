@@ -1,6 +1,6 @@
 # Easy RPC
 
-This is a simple command line program that allows you to set a custom [Discord Rich Presence](https://discord.com/rich-presence).
+This is a simple and easy to use app that allows you to set a custom [Discord Rich Presence](https://discord.com/rich-presence).
 I made this cause I had nothing else to do. So yeah.
 
 ## How To Run

@@ -139,18 +139,7 @@
         let profiles = localStorage.getItem("@rpc/profiles");
         profiles = JSON.parse(profiles);
         let profile = profiles.find((p) => p.id == profileID);
-        if (document.getElementById("button_1_label")) {
-            document.getElementById("button_1_label").remove();
-        }
-        if (document.getElementById("button_1_url")) {
-            document.getElementById("button_1_url").remove();
-        }
-        if (document.getElementById("button_2_label")) {
-            document.getElementById("button_2_label").remove();
-        }
-        if (document.getElementById("button_2_url")) {
-            document.getElementById("button_2_url").remove();
-        }
+        clearProfile();
         if (profile.data) {
             let data = profile.data;
             document.getElementById("profileName").value = profile.name;
@@ -187,26 +176,40 @@
             if (b2l != "" && b2u != "") {
                 addButton();
             }
-        } else {
-            document.getElementById("profileName").value = "";
-            document.getElementById("token").value = "";
-            document.getElementById("state").value = "";
-            document.getElementById("details").value = "";
-            document.getElementById("startTimestamp").value = "";
-            document.getElementById("endTimestamp").value = "";
-            document.getElementById("largeImageKey").value = "";
-            document.getElementById("largeImageText").value = "";
-            document.getElementById("smallImageKey").value = "";
-            document.getElementById("smallImageText").value = "";
-            document.getElementById("partyId").value = "";
-            document.getElementById("partySize").value = "";
-            document.getElementById("partyMax").value = "";
-            document.getElementById("joinSecret").value = "";
-            b1l = "";
-            b1u = "";
-            b2l = "";
-            b2u = "";
         }
+    }
+
+    function clearProfile() {
+        if (document.getElementById("button_1_label")) {
+            document.getElementById("button_1_label").remove();
+        }
+        if (document.getElementById("button_1_url")) {
+            document.getElementById("button_1_url").remove();
+        }
+        if (document.getElementById("button_2_label")) {
+            document.getElementById("button_2_label").remove();
+        }
+        if (document.getElementById("button_2_url")) {
+            document.getElementById("button_2_url").remove();
+        }
+        b1l = "";
+        b1u = "";
+        b2l = "";
+        b2u = "";
+        document.getElementById("profileName").value = "";
+        document.getElementById("token").value = "";
+        document.getElementById("state").value = "";
+        document.getElementById("details").value = "";
+        document.getElementById("startTimestamp").value = "";
+        document.getElementById("endTimestamp").value = "";
+        document.getElementById("largeImageKey").value = "";
+        document.getElementById("largeImageText").value = "";
+        document.getElementById("smallImageKey").value = "";
+        document.getElementById("smallImageText").value = "";
+        document.getElementById("partyId").value = "";
+        document.getElementById("partySize").value = "";
+        document.getElementById("partyMax").value = "";
+        document.getElementById("joinSecret").value = "";
     }
 
     function createProfile() {
