@@ -76,6 +76,13 @@
   resolved "https://registry.yarnpkg.com/@types/discord-rpc/-/discord-rpc-3.0.5.tgz#16f03fb6ca9a111e4e1f69571e966d1ddf893160"
   integrity sha512-rgv9W0XNZt437MoUrQfS6OPjTn1MI3Oix9l5aKyzma5Xf4MAiXbHTPUrL62HlHx6WuFMI58bQpJqoXjz+fHCuQ==
 
+"@types/electron-prompt@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@types/electron-prompt/-/electron-prompt-1.6.0.tgz#30c2e33a338e6bdeda91892fb776331c879f5454"
+  integrity sha512-mCIUiLE+KG2KrBrU7ertAwN4e9WoPs9XGxl6xsD8O4IU9cqSdj6xJSTKA8kU3bcfV0MenkvwANouIe+awxGdBg==
+  dependencies:
+    electron latest
+
 "@types/fs-extra@^9.0.7":
   version "9.0.8"
   resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-9.0.8.tgz#32c3c07ddf8caa5020f84b5f65a48470519f78ba"
@@ -757,7 +764,7 @@ electron-updater@^4.3.8:
     lodash.isequal "^4.5.0"
     semver "^7.3.4"
 
-electron@^12.0.2:
+electron@^12.0.2, electron@latest:
   version "12.0.2"
   resolved "https://registry.yarnpkg.com/electron/-/electron-12.0.2.tgz#d92be205f1937627bd6718aad44ac161382b4c2d"
   integrity sha512-14luh9mGzfL4e0sncyy0+kW37IU7Y0Y1tvI97FDRSW0ZBQxi5cmAwSs5dmPmNBFBIGtzkaGaEB01j9RjZuCmow==

@@ -1,16 +1,19 @@
 import * as Discord from 'discord-rpc';
 import { ipcMain, BrowserWindow } from 'electron';
 import * as path from "path";
-import { mainWindow } from "./index"
+import { commons, mainWindow } from "./index"
 import prompt from 'electron-prompt';
+import { EventEmitter } from 'events';
 
 export let RPC_STARTED = false;
+export let RPC_TRYING_TO_START = false;
 let PREV_TOKEN = "";
 let buttons: any[] = [];
 
 let RPC_INTERVAL: NodeJS.Timeout;
 export let rpc = new Discord.Client({ transport: 'ipc' });
 let RPC_DESTROYED = false;
+const rpcEmitter = new EventEmitter();
 
 export async function startHandler() {
     ipcMain.on("@rpc/update", async (event, data) => {
@@ -29,6 +32,17 @@ export async function startHandler() {
         }
     });
 
+    ipcMain.on("@rpc/dockAndStart", async (event, data) => {
+        if (commons.autoLaunch && commons.shouldDock) {
+            await updateRPC(data);
+            rpcEmitter.once('@rpc/started', (event, args) => {
+                if (!mainWindow.isDestroyed()) {
+                    mainWindow.destroy();
+                }
+            })
+        }
+    });
+
     ipcMain.on("@rpc/importPrompt", (event, args) => {
 
         prompt({
@@ -39,7 +53,7 @@ export async function startHandler() {
                 type: 'text'
             },
             type: 'input'
-        }).then((r: string) => {
+        }).then((r: string | null) => {
             if (r !== null) {
                 mainWindow.webContents.send("@rpc/importPrompt", r);
             }
@@ -112,10 +126,13 @@ export async function updateRPC(data: any) {
                     updateRPC(data);
                 }, 60000);
             }
+            RPC_TRYING_TO_START = true;
+            rpcEmitter.emit('@rpc/started');
         });
     }
     if (RPC_STARTED && presenceData.token == PREV_TOKEN) {
         rpc.setActivity(presenceData);
+        rpcEmitter.emit('@rpc/started')
         if (!mainWindow.isDestroyed()) {
             mainWindow.webContents.send("@rpc/status", RPC_STARTED);
         }
@@ -127,6 +144,7 @@ export async function updateRPC(data: any) {
                 }
                 RPC_STARTED = true;
                 rpc.setActivity(presenceData);
+                rpcEmitter.emit('@rpc/started')
                 if (!mainWindow.isDestroyed()) {
                     mainWindow.webContents.send("@rpc/status", RPC_STARTED);
                 }

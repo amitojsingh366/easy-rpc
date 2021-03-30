@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, shell, Tray } from "electron";
 import * as path from "path";
 import { autoUpdater } from "electron-updater";
-import { RPC_STARTED, startHandler, rpc } from "./presence";
+import { RPC_STARTED, startHandler, rpc, RPC_TRYING_TO_START } from "./presence";
 import { HandleTray } from "./tray";
 import AutoLaunch from 'auto-launch';
 
@@ -11,6 +11,7 @@ const instanceLock = app.requestSingleInstanceLock();
 
 export const commons = {
     shouldDock: true,
+    autoLaunch: false,
 }
 
 const easyRPCAutoLauncher = new AutoLaunch({
@@ -56,6 +57,7 @@ app.on("ready", async () => {
         } else {
             easyRPCAutoLauncher.disable();
         }
+        commons.autoLaunch = autoLaunch;
     })
     ipcMain.on("@app/quit", (event, args) => {
         if (RPC_STARTED && rpc) {
@@ -65,9 +67,11 @@ app.on("ready", async () => {
         }
         app.quit();
     });
-
-    mainWindow.webContents.send("@app/shouldDock", "");
-    mainWindow.webContents.send("@app/autoLaunch", "");
+    if (!mainWindow.isDestroyed()) {
+        mainWindow.webContents.send("@app/shouldDock", "");
+        mainWindow.webContents.send("@app/autoLaunch", "");
+        mainWindow.webContents.send("@app/started", "");
+    }
 });
 
 if (!instanceLock) {
@@ -88,7 +92,7 @@ if (!instanceLock) {
 }
 
 app.on("window-all-closed", () => {
-    if (RPC_STARTED && commons.shouldDock) {
+    if ((RPC_STARTED && commons.shouldDock) || (RPC_TRYING_TO_START && commons.shouldDock)) {
         return;
     } else {
         app.quit();

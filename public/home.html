@@ -68,7 +68,7 @@
     <br><br>
 
     <button onclick="saveData()" class="save-btn">Save</button>
-    <button onclick="submitData()" class="start-btn">Start</button>
+    <button onclick="submitData()" class="start-btn" id="start-btn">Start</button>
 
     <br><br>
 
@@ -129,6 +129,9 @@
             const profile = profiles[index];
             let opt = document.createElement("option");
             if (profile.id === select) {
+                opt.selected = true;
+            }
+            if (profile.id === "default" && profile.default) {
                 opt.selected = true;
             }
             opt.value = profile.id;
@@ -296,6 +299,13 @@
     }
 
     function onLoad() {
+        let lp = "default";
+        if (localStorage.getItem("@app/lastProfile")) {
+            lp = localStorage.getItem("@app/lastProfile");
+        }
+
+        loadProfiles(lp);
+
         ipcRenderer.send("@rpc/status", "");
         setInterval(() => {
             ipcRenderer.send("@rpc/status", "");
@@ -304,6 +314,7 @@
         ipcRenderer.on("@rpc/status", (event, isRunning) => {
             if (isRunning) {
                 document.getElementById("is-running-banner").style.display = 'inherit';
+                document.getElementById('start-btn').innerText = 'Update';
             } else {
                 document.getElementById("is-running-banner").style.display = 'none';
             }
@@ -320,6 +331,13 @@
             document.getElementById("should-autolaunch-checkbox").checked = false;
         }
 
+        ipcRenderer.on("@app/started", (event, args) => {
+            if (document.getElementById("should-dock-checkbox").checked && document.getElementById("should-autolaunch-checkbox").checked) {
+                let data = getData();
+                ipcRenderer.send("@rpc/dockAndStart", data);
+            }
+        });
+
         ipcRenderer.on("@app/shouldDock", (event, args) => {
             ipcRenderer.send("@app/shouldDock", document.getElementById("should-dock-checkbox").checked);
         });
@@ -328,19 +346,15 @@
             ipcRenderer.send("@app/autoLaunch", document.getElementById("should-autolaunch-checkbox").checked);
         });
 
-        let lp = "default";
-        if (localStorage.getItem("@app/lastProfile")) {
-            lp = localStorage.getItem("@app/lastProfile");
-        }
 
-        loadProfiles(lp);
+
     }
 
     function clearData() {
         localStorage.clear();
     }
 
-    function saveData() {
+    function getData() {
         let data = {
             token: document.getElementById("token").value,
             state: document.getElementById("state").value,
@@ -366,6 +380,12 @@
             data.button_2_label = document.getElementById("button_2_label").value;
             data.button_2_url = document.getElementById("button_2_url").value;
         }
+
+        return data;
+    }
+
+    function saveData() {
+        let data = getData();
 
         let profileID = document.getElementById("profiles").value;
         let profiles = localStorage.getItem("@rpc/profiles");
@@ -385,31 +405,7 @@
     }
 
     function submitData() {
-        let data = {
-            token: document.getElementById("token").value,
-            state: document.getElementById("state").value,
-            details: document.getElementById("details").value,
-            startTimestamp: document.getElementById("startTimestamp").value,
-            endTimestamp: document.getElementById("endTimestamp").value,
-            largeImageKey: document.getElementById("largeImageKey").value,
-            largeImageText: document.getElementById("largeImageText").value,
-            smallImageKey: document.getElementById("smallImageKey").value,
-            smallImageText: document.getElementById("smallImageText").value,
-            partyId: document.getElementById("partyId").value,
-            partySize: document.getElementById("partySize").value,
-            partyMax: document.getElementById("partyMax").value,
-            joinSecret: document.getElementById("joinSecret").value,
-        }
-
-        if (document.getElementById("button_1_label") || document.getElementById("button_1_url")) {
-            data.button_1_label = document.getElementById("button_1_label").value;
-            data.button_1_url = document.getElementById("button_1_url").value;
-        }
-
-        if (document.getElementById("button_2_label") || document.getElementById("button_2_url")) {
-            data.button_2_label = document.getElementById("button_2_label").value;
-            data.button_2_url = document.getElementById("button_2_url").value;
-        }
+        let data = getData();
 
         let profileID = document.getElementById("profiles").value;
         let profiles = localStorage.getItem("@rpc/profiles");
