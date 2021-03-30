@@ -54,6 +54,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createWindow = exports.commons = exports.mainWindow = void 0;
 var electron_1 = require("electron");
@@ -61,11 +64,15 @@ var path = __importStar(require("path"));
 var electron_updater_1 = require("electron-updater");
 var presence_1 = require("./presence");
 var tray_1 = require("./tray");
+var auto_launch_1 = __importDefault(require("auto-launch"));
 var tray;
 var instanceLock = electron_1.app.requestSingleInstanceLock();
 exports.commons = {
     shouldDock: true,
 };
+var easyRPCAutoLauncher = new auto_launch_1.default({
+    name: 'Easy RPC',
+});
 function createWindow() {
     return __awaiter(this, void 0, void 0, function () {
         var handleLinks;
@@ -114,13 +121,39 @@ electron_1.app.on("ready", function () { return __awaiter(void 0, void 0, void 0
                 return [4 /*yield*/, tray_1.HandleTray(tray)];
             case 3:
                 _a.sent();
-                exports.mainWindow.webContents.send("@app/shouldDock", "");
                 electron_1.ipcMain.on("@app/shouldDock", function (event, shouldDock) {
                     exports.commons.shouldDock = shouldDock;
                 });
+                electron_1.ipcMain.on("@app/autoLaunch", function (event, autoLaunch) { return __awaiter(void 0, void 0, void 0, function () {
+                    var _a, _b, _c;
+                    return __generator(this, function (_d) {
+                        switch (_d.label) {
+                            case 0:
+                                if (autoLaunch) {
+                                    easyRPCAutoLauncher.enable();
+                                }
+                                else {
+                                    easyRPCAutoLauncher.disable();
+                                }
+                                _b = (_a = console).log;
+                                _c = "auto-launch: ";
+                                return [4 /*yield*/, easyRPCAutoLauncher.isEnabled()];
+                            case 1:
+                                _b.apply(_a, [_c + (_d.sent())]);
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
                 electron_1.ipcMain.on("@app/quit", function (event, args) {
+                    if (presence_1.RPC_STARTED && presence_1.rpc) {
+                        presence_1.rpc.removeAllListeners();
+                        presence_1.rpc.clearActivity();
+                        presence_1.rpc.destroy();
+                    }
                     electron_1.app.quit();
                 });
+                exports.mainWindow.webContents.send("@app/shouldDock", "");
+                exports.mainWindow.webContents.send("@app/autoLaunch", "");
                 return [2 /*return*/];
         }
     });
@@ -131,11 +164,11 @@ if (!instanceLock) {
 else {
     electron_1.app.on("second-instance", function (event, argv, workingDirectory) {
         if (exports.mainWindow) {
-            if (exports.mainWindow.isMinimized()) {
-                exports.mainWindow.restore();
-            }
-            else if (exports.mainWindow.isDestroyed()) {
+            if (exports.mainWindow.isDestroyed()) {
                 createWindow();
+            }
+            else if (exports.mainWindow.isMinimized()) {
+                exports.mainWindow.restore();
             }
             exports.mainWindow.focus();
         }

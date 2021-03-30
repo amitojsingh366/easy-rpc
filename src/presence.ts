@@ -9,8 +9,8 @@ let PREV_TOKEN = "";
 let buttons: any[] = [];
 
 let RPC_INTERVAL: NodeJS.Timeout;
-const rpc = new Discord.Client({ transport: 'ipc' });
-
+export let rpc = new Discord.Client({ transport: 'ipc' });
+let RPC_DESTROYED = false;
 
 export async function startHandler() {
     ipcMain.on("@rpc/update", async (event, data) => {
@@ -58,9 +58,6 @@ export async function updateRPC(data: any) {
         } else {
             buttons.push({ label: data.button_1_label, url: data.button_1_url });
         }
-
-        delete data.button_1_label;
-        delete data.button_1_url;
     }
     if (data.button_2_label) {
         if (!buttons) {
@@ -68,9 +65,6 @@ export async function updateRPC(data: any) {
         } else {
             buttons.push({ label: data.button_2_label, url: data.button_2_url });
         }
-
-        delete data.button_2_label;
-        delete data.button_2_url;
     }
 
     if (data.startTimestamp) {
@@ -99,28 +93,34 @@ export async function updateRPC(data: any) {
     }
     let presenceData = await cleanData(data);
     if (RPC_STARTED == false || data.token != PREV_TOKEN) {
+        RPC_DESTROYED = false;
+        if (RPC_STARTED) {
+            rpc.removeAllListeners();
+            rpc.clearActivity();
+            rpc.destroy();
+            rpc = new Discord.Client({ transport: 'ipc' });
+        }
         rpc.login({ clientId: presenceData.token }).catch((e) => {
-            // console.log("Error");
-            // if (!RPC_INTERVAL) {
-            //     console.log("setInterval")
-            //     RPC_INTERVAL = setInterval(() => {
-            //         updateRPC(data);
-            //     }, 2000);
-            // }
-            // return false;
-            console.log("error");
-            console.log(e);
-        })
-
+            console.log("Error");
+            rpc.removeAllListeners();
+            //rpc.destroy();
+            rpc = new Discord.Client({ transport: 'ipc' });
+            RPC_DESTROYED = true;
+            if (!RPC_INTERVAL) {
+                console.log("setInterval")
+                RPC_INTERVAL = setInterval(() => {
+                    updateRPC(data);
+                }, 60000);
+            }
+        });
     }
-    delete presenceData.token;
-    if (RPC_STARTED) {
+    if (RPC_STARTED && presenceData.token == PREV_TOKEN) {
         rpc.setActivity(presenceData);
         if (!mainWindow.isDestroyed()) {
             mainWindow.webContents.send("@rpc/status", RPC_STARTED);
         }
     } else {
-        if (rpc.listeners('ready').length === 0) {
+        if (!RPC_DESTROYED) {
             rpc.on('ready', () => {
                 if (RPC_INTERVAL) {
                     clearInterval(RPC_INTERVAL);
@@ -133,6 +133,9 @@ export async function updateRPC(data: any) {
             });
         }
     }
+
+    PREV_TOKEN = presenceData.token;
+
 }
 
 

@@ -58,7 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateRPC = exports.startHandler = exports.RPC_STARTED = void 0;
+exports.updateRPC = exports.startHandler = exports.rpc = exports.RPC_STARTED = void 0;
 var Discord = __importStar(require("discord-rpc"));
 var electron_1 = require("electron");
 var path = __importStar(require("path"));
@@ -68,7 +68,8 @@ exports.RPC_STARTED = false;
 var PREV_TOKEN = "";
 var buttons = [];
 var RPC_INTERVAL;
-var rpc = new Discord.Client({ transport: 'ipc' });
+exports.rpc = new Discord.Client({ transport: 'ipc' });
+var RPC_DESTROYED = false;
 function startHandler() {
     return __awaiter(this, void 0, void 0, function () {
         var _this = this;
@@ -129,8 +130,6 @@ function updateRPC(data) {
                         else {
                             buttons.push({ label: data.button_1_label, url: data.button_1_url });
                         }
-                        delete data.button_1_label;
-                        delete data.button_1_url;
                     }
                     if (data.button_2_label) {
                         if (!buttons) {
@@ -139,8 +138,6 @@ function updateRPC(data) {
                         else {
                             buttons.push({ label: data.button_2_label, url: data.button_2_url });
                         }
-                        delete data.button_2_label;
-                        delete data.button_2_url;
                     }
                     if (data.startTimestamp) {
                         data.startTimestamp = Number(data.startTimestamp);
@@ -176,40 +173,48 @@ function updateRPC(data) {
                 case 4:
                     presenceData = _c.sent();
                     if (exports.RPC_STARTED == false || data.token != PREV_TOKEN) {
-                        rpc.login({ clientId: presenceData.token }).catch(function (e) {
-                            // console.log("Error");
-                            // if (!RPC_INTERVAL) {
-                            //     console.log("setInterval")
-                            //     RPC_INTERVAL = setInterval(() => {
-                            //         updateRPC(data);
-                            //     }, 2000);
-                            // }
-                            // return false;
-                            console.log("error");
-                            console.log(e);
+                        RPC_DESTROYED = false;
+                        if (exports.RPC_STARTED) {
+                            exports.rpc.removeAllListeners();
+                            exports.rpc.clearActivity();
+                            exports.rpc.destroy();
+                            exports.rpc = new Discord.Client({ transport: 'ipc' });
+                        }
+                        exports.rpc.login({ clientId: presenceData.token }).catch(function (e) {
+                            console.log("Error");
+                            exports.rpc.removeAllListeners();
+                            //rpc.destroy();
+                            exports.rpc = new Discord.Client({ transport: 'ipc' });
+                            RPC_DESTROYED = true;
+                            if (!RPC_INTERVAL) {
+                                console.log("setInterval");
+                                RPC_INTERVAL = setInterval(function () {
+                                    updateRPC(data);
+                                }, 2000);
+                            }
                         });
                     }
-                    delete presenceData.token;
-                    if (exports.RPC_STARTED) {
-                        rpc.setActivity(presenceData);
+                    if (exports.RPC_STARTED && presenceData.token == PREV_TOKEN) {
+                        exports.rpc.setActivity(presenceData);
                         if (!index_1.mainWindow.isDestroyed()) {
                             index_1.mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
                         }
                     }
                     else {
-                        if (rpc.listeners('ready').length === 0) {
-                            rpc.on('ready', function () {
+                        if (!RPC_DESTROYED) {
+                            exports.rpc.on('ready', function () {
                                 if (RPC_INTERVAL) {
                                     clearInterval(RPC_INTERVAL);
                                 }
                                 exports.RPC_STARTED = true;
-                                rpc.setActivity(presenceData);
+                                exports.rpc.setActivity(presenceData);
                                 if (!index_1.mainWindow.isDestroyed()) {
                                     index_1.mainWindow.webContents.send("@rpc/status", exports.RPC_STARTED);
                                 }
                             });
                         }
                     }
+                    PREV_TOKEN = presenceData.token;
                     return [2 /*return*/];
             }
         });

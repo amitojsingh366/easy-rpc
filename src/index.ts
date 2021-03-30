@@ -1,8 +1,9 @@
 import { app, BrowserWindow, ipcMain, shell, Tray } from "electron";
 import * as path from "path";
 import { autoUpdater } from "electron-updater";
-import { RPC_STARTED, startHandler } from "./presence";
+import { RPC_STARTED, startHandler, rpc } from "./presence";
 import { HandleTray } from "./tray";
+import AutoLaunch from 'auto-launch';
 
 export let mainWindow: BrowserWindow;
 let tray: Tray;
@@ -11,6 +12,10 @@ const instanceLock = app.requestSingleInstanceLock();
 export const commons = {
     shouldDock: true,
 }
+
+const easyRPCAutoLauncher = new AutoLaunch({
+    name: 'Easy RPC',
+});
 
 export async function createWindow() {
     mainWindow = new BrowserWindow({
@@ -42,13 +47,27 @@ app.on("ready", async () => {
     await startHandler()
     tray = new Tray(path.join(__dirname, `../icons/tray.png`));
     await HandleTray(tray);
-    mainWindow.webContents.send("@app/shouldDock", "");
     ipcMain.on("@app/shouldDock", (event, shouldDock) => {
         commons.shouldDock = shouldDock;
     })
-    ipcMain.on("@app/quit", (event, args) => {
-        app.quit();
+    ipcMain.on("@app/autoLaunch", (event, autoLaunch) => {
+        if (autoLaunch) {
+            easyRPCAutoLauncher.enable();
+        } else {
+            easyRPCAutoLauncher.disable();
+        }
     })
+    ipcMain.on("@app/quit", (event, args) => {
+        if (RPC_STARTED && rpc) {
+            rpc.removeAllListeners();
+            rpc.clearActivity();
+            rpc.destroy();
+        }
+        app.quit();
+    });
+
+    mainWindow.webContents.send("@app/shouldDock", "");
+    mainWindow.webContents.send("@app/autoLaunch", "");
 });
 
 if (!instanceLock) {
