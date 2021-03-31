@@ -7,6 +7,7 @@ I made this cause I had nothing else to do. So yeah.
 - Multiple profile support with import/export options *(i.e profile sharing)*
 - Option to dock to system tray *(i.e there's no need to keep the app window open! It will run in background if enabled!)*
 - Option to auto-launch on startup *(i.e there's no need to even open the app! If enabled it will automatically start, hook to discord and dock to system tray!)*
+- An easy to understand help section that will allow you to easily create your first RPC profile!
 
 ## How To Run
 
