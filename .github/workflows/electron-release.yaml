@@ -1,8 +1,9 @@
 name: build-and-release-electron
 
-on:
-  tags:
-     - v*
+on:  
+  push:
+    tags:
+      - '*'
 
 jobs:
   release:
