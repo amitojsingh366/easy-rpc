@@ -100,7 +100,7 @@ export async function updateRPC(data: any) {
         data.spectateSecret = await randomString(8);
         delete data.buttons;
     }
-    if (buttons) {
+    if (buttons.length != 0) {
         let a: any = buttons.slice(0, 2);
         buttons = a;
         data.buttons = buttons;
