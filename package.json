@@ -1,6 +1,6 @@
 {
     "name": "easy-rpc",
-    "version": "2.0.13",
+    "version": "2.0.14",
     "description": "A easy discord rpc",
     "main": "dist/index.js",
     "scripts": {
@@ -48,7 +48,8 @@
         "linux": {
             "icon": "icons/icon.png",
             "target": [
-                "deb"
+                "deb",
+                "AppImage"
             ]
         },
         "extraMetadata": {
