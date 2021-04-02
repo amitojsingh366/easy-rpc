@@ -1,12 +1,14 @@
-import { app, BrowserWindow, ipcMain, shell, Tray } from "electron";
+import { app, BrowserWindow, ipcMain, Menu, shell, Tray } from "electron";
 import * as path from "path";
 import { autoUpdater } from "electron-updater";
 import { RPC_STARTED, startHandler, rpc, RPC_TRYING_TO_START } from "./presence";
 import { HandleTray } from "./tray";
 import AutoLaunch from 'auto-launch';
+import { MENU_TEMPLATE } from "./constants";
 
 export let mainWindow: BrowserWindow;
 let tray: Tray;
+let menu: Menu;
 const instanceLock = app.requestSingleInstanceLock();
 
 export const commons = {
@@ -30,7 +32,8 @@ export async function createWindow() {
     });
 
     await mainWindow.loadFile(path.join(__dirname, "../public/home.html"));
-
+    menu = Menu.buildFromTemplate(MENU_TEMPLATE);
+    Menu.setApplicationMenu(menu);
     const handleLinks = (event: any, url: string) => {
         event.preventDefault();
         shell.openExternal(url);
@@ -66,6 +69,9 @@ app.on("ready", async () => {
             rpc.destroy();
         }
         app.quit();
+    });
+    ipcMain.on('@app/version', (event, args) => {
+        event.sender.send('@app/version', app.getVersion());
     });
     if (!mainWindow.isDestroyed()) {
         mainWindow.webContents.send("@app/shouldDock", "");

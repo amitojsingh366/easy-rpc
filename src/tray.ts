@@ -1,7 +1,8 @@
 import { app, BrowserWindow, Menu, Tray } from "electron";
+import { autoUpdater } from "electron-updater";
 import { createWindow, mainWindow } from "./index";
 
-export async function HandleTray( tray: Tray) {
+export async function HandleTray(tray: Tray) {
     let TRAY_MENU: any = [
         {
             label: "Open Easy RPC",
@@ -13,6 +14,13 @@ export async function HandleTray( tray: Tray) {
                 }
             },
         },
+        {
+            label: "Check For Updates",
+            click: () => {
+                autoUpdater.checkForUpdatesAndNotify();
+            },
+        },
+        { type: 'separator' },
         {
             label: "Quit Easy RPC",
             click: () => {

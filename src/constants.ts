@@ -1,9 +1,9 @@
 import { app, shell } from 'electron';
+import { autoUpdater } from "electron-updater";
 
 export const isMac = process.platform === 'darwin'
 
 const REPO_URL = "https://github.com/amitojsingh366/easy-rpc";
-const DISCUSSION_URL = "https://github.com/amitojsingh366/easy-rpc/issues";
 const ISSUES_URL = "https://github.com/amitojsingh366/easy-rpc/issues";
 
 
@@ -95,15 +95,15 @@ export const MENU_TEMPLATE: any = [
                 }
             },
             {
-                label: 'Community Discussions',
-                click: async () => {
-                    await shell.openExternal(DISCUSSION_URL)
-                }
-            },
-            {
                 label: 'Search Issues',
                 click: async () => {
                     await shell.openExternal(ISSUES_URL)
+                }
+            },
+            {
+                label: 'Check For Updates',
+                click: async () => {
+                    autoUpdater.checkForUpdatesAndNotify();
                 }
             }
         ]

@@ -7,7 +7,9 @@
 </head>
 
 <body class="bg-dark">
-    <h1>Easy RPC</h1>
+    <h1 style="margin-bottom: 0px;">Easy RPC</h1>
+    <h6 style="margin: 0px; margin-bottom: 10px; color: #bcd0dd; margin-top: 5px; text-align: center;" id="app-version">
+    </h6><br>
     <center>
 
         <div class="banner-error" style="display: none;" id="2-btn-err">
@@ -306,6 +308,10 @@
 
         loadProfiles(lp);
 
+        ipcRenderer.send("@app/version");
+        ipcRenderer.on("@app/version", (event, version) => {
+            document.getElementById("app-version").innerText = version;
+        })
         ipcRenderer.send("@rpc/status", "");
         setInterval(() => {
             ipcRenderer.send("@rpc/status", "");
