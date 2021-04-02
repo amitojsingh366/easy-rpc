@@ -16,9 +16,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14
+      - name: Compile Typescript
+        run: yarn compile
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
-          build_script_name: build
           github_token: ${{ secrets.github_token }}
           release: true
