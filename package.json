@@ -7,7 +7,6 @@
         "compile": "tsc",
         "watch": "tsc -w",
         "start": "yarn compile && electron ./dist/index.js",
-        "build": "yarn compile && electron-builder",
         "build:all": "yarn compile && electron-builder -mwl",
         "build:mac": "yarn compile && electron-builder --mac",
         "build:win": "yarn compile && electron-builder --win",
