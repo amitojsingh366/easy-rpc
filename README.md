@@ -12,11 +12,8 @@ I made this cause I had nothing else to do. So yeah.
 ## How To Run
 
 ### Install from pre-builds
-- Download the compressed binary for your platform from the latest [Release](https://github.com/amitojsingh366/easy-rpc/releases)
-- Extract the binary from the compressed file
-- Run the binary from a command line
-- Visit [http://localhost:6968](http://localhost:6968)
-- Follow the instructions given on the webpage
+- Download the binary for your platform from the [Latest Release](https://github.com/amitojsingh366/easy-rpc/releases/latest)
+- Run the downloaded binary
 
 ### Build from source
 - Clone this repo
