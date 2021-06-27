@@ -9,7 +9,7 @@
 .start-btn {
     width: 100px;
     height: 40px;
-    background-color: #7289DA;
+    background-color: #5865F2;
     color: #FFFFFF;
     border: 1px solid #2c2f31;
     border-radius: 20px;
@@ -17,7 +17,7 @@
 }
 
 .start-btn:hover {
-    background-color: #8fa7ff;
+    background-color: #727df1;
 }
 
 .save-btn {
@@ -25,19 +25,19 @@
     height: 40px;
     background-color: #2c2f31;
     color: #FFFFFF;
-    border: 1px solid #7289DA;
+    border: 1px solid #5865F2;
     border-radius: 20px;
     font-size: large;
 }
 
 .save-btn:hover {
-    background-color: #7289DA;
+    background-color: #5865F2;
 }
 
 .stop-btn {
     width: 100px;
     height: 40px;
-    background-color: #fb4453;
+    background-color: #ED4245;
     color: #FFFFFF;
     border: 1px solid #2c2f31;
     border-radius: 20px;
@@ -69,15 +69,15 @@
     width: auto;
     height: auto;
     background-color: #2C2F33;
-    color: #fb4453;
-    border: 1px solid #fb4453;
+    color: #ED4245;
+    border: 1px solid #ED4245;
     border-radius: 20px;
     font-size: small;
     margin-left: 20px;
 }
 
 .clear-btn-del:hover {
-    background-color: #fb4453;
+    background-color: #ED4245;
     color: #2C2F33;
     border: 1px solid #2C2F33;
 }
@@ -108,9 +108,21 @@ a {
     font-size: large;
 }
 
+.input-feild-danger {
+    outline: none;
+    padding: 10px;
+    width: 200px;
+    height: 20px;
+    background-color: #2C2F33;
+    color: #FFFFFF;
+    border: 1px solid #ED4245;
+    border-radius: 10px;
+    font-size: large;
+}
+
 .input-feild:focus {
     outline: none;
-    border: 1px solid #7289DA;
+    border: 1px solid #5865F2;
 }
 
 .banner-running {
@@ -123,7 +135,7 @@ a {
 }
 
 .banner-error {
-    background-color: #c94747;
+    background-color: #ED4245;
     width: 500px;
     padding: 1px;
     border-radius: 8px;
@@ -175,11 +187,11 @@ a {
 }
 
 input:checked+.slider {
-    background-color: #7289DA;
+    background-color: #5865F2;
 }
 
 input:focus+.slider {
-    box-shadow: 0 0 1px #7289DA;
+    box-shadow: 0 0 1px #5865F2;
 }
 
 input:checked+.slider:before {
@@ -208,7 +220,7 @@ select {
 
 select:hover {
     outline: none;
-    border: 1px solid #7289DA;
+    border: 1px solid #5865F2;
 }
 
 option {

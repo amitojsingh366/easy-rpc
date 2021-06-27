@@ -310,6 +310,7 @@
 
         ipcRenderer.send("@app/version");
         ipcRenderer.on("@app/version", (event, version) => {
+            console.log(`Current app version: ${version}`)
             document.getElementById("app-version").innerText = version;
         })
         ipcRenderer.send("@rpc/status", "");
@@ -445,6 +446,7 @@
                 input.id = 'button_2_label';
                 input.className = 'input-feild';
                 input.placeholder = 'Button Label';
+                input.maxLength = 32;
                 input.value = b2l;
                 input_2.type = 'text';
                 input_2.name = 'button_2_url';
@@ -463,6 +465,7 @@
             input.id = 'button_1_label';
             input.className = 'input-feild';
             input.placeholder = 'Button Label';
+            input.maxLength = 32;
             input.value = b1l;
             input_2.type = 'text';
             input_2.name = 'button_1_url';
