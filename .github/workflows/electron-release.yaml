@@ -40,7 +40,7 @@ jobs:
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
           github_token: ${{ secrets.github_token }}
-          release: false
+          release: true
         env:
           # macOS notarization API key
           API_KEY_ID: ${{ secrets.api_key_id }}
