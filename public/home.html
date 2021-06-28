@@ -29,6 +29,10 @@
             <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i>Profile has been
                 sucessfully imported!</p>
         </div>
+        <div class="banner-error" style="display: none;" id="import-error-banner">
+            <p style="font-size: 15px;"><i class="material-icons" style="font-size: 15px;">info</i>There was an error
+                importing this profile, Please try again later</p>
+        </div>
     </center><br>
     <div>
         <select name="profiles" id="profiles"
@@ -189,18 +193,12 @@
     }
 
     function clearProfile() {
-        if (document.getElementById("button_1_label")) {
-            document.getElementById("button_1_label").remove();
-        }
-        if (document.getElementById("button_1_url")) {
-            document.getElementById("button_1_url").remove();
-        }
-        if (document.getElementById("button_2_label")) {
-            document.getElementById("button_2_label").remove();
-        }
-        if (document.getElementById("button_2_url")) {
-            document.getElementById("button_2_url").remove();
-        }
+        if (document.getElementById("button_1_label")) document.getElementById("button_1_label").remove();
+        if (document.getElementById("button_1_url")) document.getElementById("button_1_url").remove();
+        if (document.getElementById("button_2_label")) document.getElementById("button_2_label").remove();
+        if (document.getElementById("button_2_url")) document.getElementById("button_2_url").remove();
+        if (document.getElementById('button-breaker')) document.getElementById('button-breaker').remove();
+
         b1l = "";
         b1u = "";
         b2l = "";
@@ -270,18 +268,24 @@
                     c++;
                     res = JSON.parse(res)
                     if (res.code == 200) {
-                        let data = decodeURIComponent(atob(res.data));
-                        data = JSON.parse(data);
-                        let profiles = localStorage.getItem("@rpc/profiles");
-                        profiles = JSON.parse(profiles);
-                        if (profiles.find((p) => p.id == data.id)) {
-                            let i = profiles.find((p) => p.id == data.id);
-                            profiles.splice(i, 1);
+                        try {
+                            let data = decodeURIComponent(atob(res.data));
+                            data = JSON.parse(data);
+                            let profiles = localStorage.getItem("@rpc/profiles");
+                            profiles = JSON.parse(profiles);
+                            if (profiles.find((p) => p.id == data.id)) {
+                                let i = profiles.find((p) => p.id == data.id);
+                                profiles.splice(i, 1);
+                            }
+                            data.default = false;
+                            profiles.push(data);
+                            localStorage.setItem("@rpc/profiles", JSON.stringify(profiles));
+                            loadProfiles(data.id);
+                            document.getElementById("import-success-banner").style.display = 'inherit';
+                        } catch (e) {
+                            console.log(e);
+                            document.getElementById("import-error-banner").style.display = 'inherit';
                         }
-                        profiles.push(data);
-                        localStorage.setItem("@rpc/profiles", JSON.stringify(profiles));
-                        loadProfiles(data.id);
-                        document.getElementById("import-success-banner").style.display = 'inherit';
                     }
                 }
             }
@@ -461,6 +465,8 @@
         } else {
             let input = document.createElement('input');
             let input_2 = document.createElement('input');
+            let breaker = document.createElement('br');
+            breaker.id = 'button-breaker';
             input.type = 'text';
             input.name = 'button_1_label';
             input.id = 'button_1_label';
@@ -477,6 +483,7 @@
             input_2.value = b1u;
             btn_div.append(input);
             btn_div.append(input_2);
+            btn_div.append(breaker);
         }
     }
 

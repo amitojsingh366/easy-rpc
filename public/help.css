@@ -1,34 +1,33 @@
 :root {
-    background-color: #2C2F33;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: #FFFFFF;
-    font-size: large;
+  background-color: #2c2f33;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #ffffff;
+  font-size: large;
 }
 
-h1{
-    text-align: center;
+h1 {
+  text-align: center;
 }
-h3{
-    padding-left: 50px;
+h3 {
+  padding-left: 50px;
 }
-a{
-    color: #bcd0dd;
+a {
+  color: #bcd0dd;
 }
-.footer-div{
-    text-align: center;
+.footer-div {
+  text-align: center;
 }
 
 .back-btn {
-    width: 100px;
-    height: 40px;
-    background-color: #7289DA;
-    color: #FFFFFF;
-    border: 1px solid #2c2f31;
-    border-radius: 20px;
-    font-size: large;
+  width: 100px;
+  height: 40px;
+  background-color: #5865f2;
+  color: #ffffff;
+  border: 1px solid #2c2f31;
+  border-radius: 20px;
+  font-size: large;
 }
 
 .back-btn:hover {
-    background-color: #8fa7ff;
+  background-color: #8fa7ff;
 }
-
