@@ -238,9 +238,15 @@
         let profile = profiles.find((p) => p.id == id);
         let profileData = JSON.stringify(profile);
         profileData = btoa(encodeURIComponent(profileData));
+
+        const formData = new FormData();
+        formData.append('profileID', profile.id);
+        formData.append('name', profile.name);
+        formData.append('data', profileData);
+
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", `https://easy-rpc.amitoj.net/new-profile.php?profileID=${profile.id}&name=${profile.name}&data=${profileData}`);
-        xhr.send();
+        xhr.open("POST", `https://easy-rpc.amitoj.net/create_profile.php`);
+        xhr.send(formData);
         xhr.onreadystatechange = () => {
             let res = xhr.responseText
             if (res) {
@@ -260,7 +266,7 @@
             ipcRenderer.removeListener("@rpc/importPrompt", importFromID);
             const xhr = new XMLHttpRequest();
             let c = 0;
-            xhr.open("GET", `https://easy-rpc.amitoj.net/get-profile.php?id=${profileID}`);
+            xhr.open("GET", `https://easy-rpc.amitoj.net/get_profile?id=${profileID}`);
             xhr.send();
             xhr.onreadystatechange = () => {
                 let res = xhr.responseText
