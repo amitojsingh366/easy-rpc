@@ -1,8 +1,7 @@
 export interface Profile {
     id: string;
     name: string | undefined;
-    default: boolean,
-    data: ProfileData
+    data?: ProfileData
 }
 
 export interface ProfileData {
@@ -23,4 +22,11 @@ export interface ProfileData {
     button_1_url: string | undefined;
     button_2_label: string | undefined;
     button_2_url: string | undefined;
+}
+
+
+export interface SelectionOption {
+    value: string,
+    text: string,
+    selected: boolean
 }

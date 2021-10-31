@@ -1,0 +1,113 @@
+[
+    {
+        "id": "bdbM9oQwAobDkMa7uQWdHp7mv5oriibT",
+        "name": "heart",
+        "default": false,
+        "data": {
+            "token": "824745301536669696",
+            "state": "Heart",
+            "details": "",
+            "startTimestamp": "",
+            "endTimestamp": "",
+            "largeImageKey": "icon",
+            "largeImageText": "my heart",
+            "smallImageKey": "",
+            "smallImageText": "",
+            "partyId": "",
+            "partySize": "",
+            "partyMax": "",
+            "joinSecret": "",
+            "button_1_label": "join",
+            "button_1_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        }
+    },
+    {
+        "id": "dBVozKBjvuULbX5UufBiiSMw2y5Cy8JR",
+        "name": "katana",
+        "default": false,
+        "data": {
+            "token": "825691751565230160",
+            "state": "playing Hide and Seek",
+            "details": ":see_no_evil:",
+            "startTimestamp": "",
+            "endTimestamp": "",
+            "largeImageKey": "1234",
+            "largeImageText": "hi",
+            "smallImageKey": "",
+            "smallImageText": "",
+            "partyId": "",
+            "partySize": "",
+            "partyMax": "",
+            "joinSecret": "",
+            "button_1_label": "wanna join?:eyes:",
+            "button_1_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "button_2_label": "or you can do this:poop:",
+            "button_2_url": "https://github.com/amitojsingh366/easy-rpc"
+        }
+    },
+    {
+        "id": "xx65WVZYCaQEB48McDM2PTZgqiszwWBY",
+        "name": "7souls",
+        "default": false,
+        "data": {
+            "token": "857929504067813426",
+            "state": "",
+            "details": "",
+            "startTimestamp": "",
+            "endTimestamp": "",
+            "largeImageKey": "7s",
+            "largeImageText": "7souls",
+            "smallImageKey": "",
+            "smallImageText": "",
+            "partyId": "",
+            "partySize": "",
+            "partyMax": "",
+            "joinSecret": "",
+            "button_1_label": "Join Now!",
+            "button_1_url": "https://discord.gg/7souls"
+        }
+    },
+    {
+        "id": "ZFOquvd6eJTrbyRp6RI0YQVYuKD74xBn",
+        "name": "Pogo",
+        "data": {
+            "token": "777902409875324988",
+            "state": "Meowing",
+            "details": "😸",
+            "startTimestamp": "",
+            "endTimestamp": "",
+            "largeImageKey": "pogo",
+            "largeImageText": "This is pogo",
+            "smallImageKey": "ball",
+            "smallImageText": "Pogo likes ball",
+            "partyId": "",
+            "partySize": "",
+            "partyMax": "",
+            "joinSecret": "",
+            "button_1_label": "Wanna join 😼",
+            "button_1_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "button_2_label": "Or Maybe you wanna do this?🙃",
+            "button_2_url": "https://github.com/amitojsingh366/easy-rpc"
+        },
+        "default": true
+    },
+    {
+        "id": "MV5WVoL4vuoD9ySyaE4anwVhjBSR03SB",
+        "name": "",
+        "data": {
+            "token": "",
+            "state": "",
+            "details": "",
+            "startTimestamp": "",
+            "endTimestamp": "",
+            "largeImageKey": "",
+            "largeImageText": "",
+            "smallImageKey": "",
+            "smallImageText": "",
+            "partyId": "",
+            "partySize": "",
+            "partyMax": "",
+            "joinSecret": ""
+        }
+    }
+]

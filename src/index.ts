@@ -42,7 +42,10 @@ export async function createWindow() {
     },
   });
 
-  await mainWindow.loadFile(path.join(__dirname, "../public/home.html"));
+  // const homepage = path.join(__dirname, "../ui/build/index.html");
+  // await mainWindow.loadFile(homepage);
+
+  await mainWindow.loadURL("http://localhost:8080");
   menu = Menu.buildFromTemplate(MENU_TEMPLATE);
   Menu.setApplicationMenu(menu);
   const handleLinks = (event: any, url: string) => {

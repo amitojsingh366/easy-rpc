@@ -4,6 +4,9 @@ export default {
     public: { url: '/', static: true },
     src: { url: '/dist' },
   },
+  buildOptions: {
+    out: "out"
+  },
   plugins: [
     '@snowpack/plugin-react-refresh',
     '@snowpack/plugin-dotenv',
