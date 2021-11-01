@@ -97,5 +97,6 @@
         "!.ui/public",
         "!.ui/src",
         "!.ui/types"
-    ]
+    ],
+    "packageManager": "yarn@3.1.0"
 }

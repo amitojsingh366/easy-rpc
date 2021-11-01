@@ -16,7 +16,6 @@ export const Selection: FC<SelectionProps> = ({
     setValue,
     options,
     className = "",
-    placeholder = ""
 }) => {
     return (
         <select className={`bg-transparent border-discord-lightBlack border hover:border-black 

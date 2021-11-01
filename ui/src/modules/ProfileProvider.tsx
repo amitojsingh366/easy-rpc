@@ -45,8 +45,9 @@ export const ProfileProvider: FC = ({ children }) => {
         const deleteIndex = profiles.indexOf(profiles.find((p) => p.id === id))
         setProfiles((p) => {
             if (!p) return;
-            p.splice(deleteIndex, 1);
-            return p;
+            const newP = [...p];
+            newP.splice(deleteIndex, 1);
+            return newP;
         });
         setCurrentProfileId(profiles[0].id)
     }
@@ -55,11 +56,11 @@ export const ProfileProvider: FC = ({ children }) => {
         if (!profiles) return;
         // @ts-ignore
         const updateIndex = profiles.indexOf(profiles.find((p) => p.id == id))
-
         setProfiles((p) => {
             if (!p) return p;
-            p[updateIndex] = newProfile;
-            return p;
+            const newP = [...p];
+            newP[updateIndex] = newProfile;
+            return newP;
         })
     }
 

@@ -4,6 +4,7 @@ import { ProfileContext } from './modules/ProfileProvider';
 import { Selection } from './components/Selection';
 import type { Profile } from './types/types';
 import { IconButton, IconButtonVariants } from './components/IconButton';
+import { Button, ButtonVariant } from './components/Button';
 
 export default function Home() {
     // @ts-ignore
@@ -156,7 +157,10 @@ export default function Home() {
                 <Input placeholder="Button Url" value={button2Url} setValue={setButton2Url} />
             </div>
 
-            <button onClick={start}>Start</button>
+            <Button onClick={start} variant={ButtonVariant.blurpleFilled}>Start</Button>
+
+            <Button onClick={save}>Save</Button>
+
 
         </ div>
     );
