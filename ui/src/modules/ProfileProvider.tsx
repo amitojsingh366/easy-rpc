@@ -11,6 +11,7 @@ export const ProfileContext = createContext<{
     createProfile: () => void,
     deleteProfile: (id: string) => void,
     updateProfile: (id: string, newProfile: Profile) => void,
+    clearData: () => void
 }>({
     profile: undefined,
     profiles: undefined,
@@ -20,6 +21,7 @@ export const ProfileContext = createContext<{
     createProfile: () => { },
     deleteProfile: (id: string) => { },
     updateProfile: (id: string, newProfile: Profile) => { },
+    clearData: () => { }
 });
 
 export const ProfileProvider: FC = ({ children }) => {
@@ -28,6 +30,13 @@ export const ProfileProvider: FC = ({ children }) => {
     const [profiles, setProfiles] = useState<Profile[]>();
     const profilesKey = "@rpc/profiles";
     const lastProfileKey = "@app/lastProfile";
+
+    const clearData = () => {
+        setProfile(undefined);
+        setProfiles([]);
+        setCurrentProfileId("");
+        localStorage.clear();
+    }
 
     const createProfile = () => {
         const id = randomString(32);
@@ -40,7 +49,7 @@ export const ProfileProvider: FC = ({ children }) => {
     }
 
     const deleteProfile = (id: string) => {
-        if (!profiles) return;
+        if (!profiles || !id) return;
         // @ts-ignore
         const deleteIndex = profiles.indexOf(profiles.find((p) => p.id === id))
         setProfiles((p) => {
@@ -104,7 +113,8 @@ export const ProfileProvider: FC = ({ children }) => {
                     setProfile,
                     createProfile,
                     deleteProfile,
-                    updateProfile
+                    updateProfile,
+                    clearData
                 }),
                 [profile, profiles, currentProfileId]
             )}>

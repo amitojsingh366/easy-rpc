@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, DetailedHTMLProps, Dispatch, FC, SetStateAction } from "react";
+import React, { ButtonHTMLAttributes, DetailedHTMLProps, FC } from "react";
 
 export type IconButtonProps = DetailedHTMLProps<
     ButtonHTMLAttributes<HTMLButtonElement>,
@@ -21,8 +21,8 @@ export const IconButton: FC<IconButtonProps> = ({
 }) => {
     return (
         <span className={`flex items-center justify-center bg-transparent
-        material-icons p-2 h-6 w-6 rounded-full cursor-pointer
-        ${variant} border ${className}`}
+        material-icons p-2 h-6 w-6 rounded-full cursor-pointer 
+        transition-colors duration-150 ${variant} border ${className}`}
             onClick={onClick}
         >{icon}</span>
     );
