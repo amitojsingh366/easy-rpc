@@ -1,16 +1,15 @@
-import { app, BrowserWindow, ipcMain, Menu, shell, Tray } from "electron";
+import { app, BrowserWindow, Menu, shell, Tray } from "electron";
 import * as path from "path";
 import { autoUpdater } from "electron-updater";
 import {
   RPC_STARTED,
   startHandler,
-  rpc,
   RPC_TRYING_TO_START,
 } from "./presence";
 import { HandleTray } from "./tray";
-import AutoLaunch from "auto-launch";
 import { MENU_TEMPLATE } from "./constants";
 import electronLogger from "electron-log";
+import { Listeners } from "./listeners";
 
 export let mainWindow: BrowserWindow;
 let tray: Tray;
@@ -27,9 +26,7 @@ export const commons = {
   autoLaunch: false,
 };
 
-const easyRPCAutoLauncher = new AutoLaunch({
-  name: "Easy RPC",
-});
+const IPCListeners = new Listeners(app);
 
 export async function createWindow() {
   mainWindow = new BrowserWindow({
@@ -41,6 +38,9 @@ export async function createWindow() {
       contextIsolation: false,
     },
   });
+
+  IPCListeners.setWindow(mainWindow);
+
 
   // const homepage = path.join(__dirname, "../ui/build/index.html");
   // await mainWindow.loadFile(homepage);
@@ -65,28 +65,7 @@ app.on("ready", async () => {
   await startHandler();
   tray = new Tray(path.join(__dirname, `../icons/tray.png`));
   await HandleTray(tray);
-  ipcMain.on("@app/shouldDock", (event, shouldDock) => {
-    commons.shouldDock = shouldDock;
-  });
-  ipcMain.on("@app/autoLaunch", (event, autoLaunch) => {
-    if (autoLaunch) {
-      easyRPCAutoLauncher.enable();
-    } else {
-      easyRPCAutoLauncher.disable();
-    }
-    commons.autoLaunch = autoLaunch;
-  });
-  ipcMain.on("@app/quit", (event, args) => {
-    if (RPC_STARTED && rpc) {
-      rpc.removeAllListeners();
-      rpc.clearActivity();
-      rpc.destroy();
-    }
-    app.quit();
-  });
-  ipcMain.on("@app/version", (event, args) => {
-    event.sender.send("@app/version", app.getVersion());
-  });
+
   if (!mainWindow.isDestroyed()) {
     mainWindow.webContents.send("@app/shouldDock", "");
     mainWindow.webContents.send("@app/autoLaunch", "");

@@ -11,7 +11,9 @@ export const ProfileContext = createContext<{
     createProfile: () => void,
     deleteProfile: (id: string) => void,
     updateProfile: (id: string, newProfile: Profile) => void,
-    clearData: () => void
+    clearData: () => void,
+    importProfile: () => void,
+    exportProfile: () => void,
 }>({
     profile: undefined,
     profiles: undefined,
@@ -21,7 +23,9 @@ export const ProfileContext = createContext<{
     createProfile: () => { },
     deleteProfile: (id: string) => { },
     updateProfile: (id: string, newProfile: Profile) => { },
-    clearData: () => { }
+    clearData: () => { },
+    importProfile: () => { },
+    exportProfile: () => { },
 });
 
 export const ProfileProvider: FC = ({ children }) => {
@@ -30,6 +34,8 @@ export const ProfileProvider: FC = ({ children }) => {
     const [profiles, setProfiles] = useState<Profile[]>();
     const profilesKey = "@rpc/profiles";
     const lastProfileKey = "@app/lastProfile";
+    // @ts-ignore
+    const { ipcRenderer } = window.require('electron');
 
     const clearData = () => {
         setProfile(undefined);
@@ -73,6 +79,20 @@ export const ProfileProvider: FC = ({ children }) => {
         })
     }
 
+    const importProfile = () => {
+        ipcRenderer.send("@profile/import")
+        ipcRenderer.once("@profile/import", (event: any, profileData: string) => {
+            const pData: Profile = JSON.parse(profileData);
+            setProfiles((p) => p ? p.concat(pData) : [pData]);
+            setCurrentProfileId(pData.id);
+        })
+    }
+
+    const exportProfile = () => {
+        if (!profile) return;
+        ipcRenderer.send("@profile/export", JSON.stringify(profile))
+    }
+
     useEffect(() => {
         const lastProfileId = localStorage.getItem(lastProfileKey);
 
@@ -89,7 +109,6 @@ export const ProfileProvider: FC = ({ children }) => {
 
 
     useEffect(() => {
-        console.log('saving new')
         localStorage.setItem(profilesKey, JSON.stringify(profiles));
     }, [profiles])
 
@@ -114,7 +133,9 @@ export const ProfileProvider: FC = ({ children }) => {
                     createProfile,
                     deleteProfile,
                     updateProfile,
-                    clearData
+                    clearData,
+                    importProfile,
+                    exportProfile
                 }),
                 [profile, profiles, currentProfileId]
             )}>

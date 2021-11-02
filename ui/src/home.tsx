@@ -19,7 +19,7 @@ export default function Home() {
     const autoLaunchRef = useRef<HTMLInputElement>(null);
 
     const {
-        profile, profiles, currentProfileId, clearData,
+        profile, profiles, currentProfileId, clearData, importProfile, exportProfile,
         setCurrentProfileId, updateProfile, createProfile, deleteProfile,
     } = useContext(ProfileContext);
 
@@ -165,13 +165,15 @@ export default function Home() {
                 <IconButton
                     icon="add_circle_outline"
                     className="mt-2"
-                    onClick={() => { createProfile() }} />
+                    onClick={createProfile} />
                 <IconButton
                     icon="file_upload"
-                    className="mt-2" />
+                    className="mt-2"
+                    onClick={exportProfile} />
                 <IconButton
                     icon="file_download"
-                    className="mt-2" />
+                    className="mt-2"
+                    onClick={importProfile} />
                 <IconButton
                     icon="delete_outline"
                     className="mt-2"
