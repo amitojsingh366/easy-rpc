@@ -214,8 +214,22 @@ export default function Home() {
                 <Input placeholder="Application ID" value={applicationId} setValue={setApplicationId} />
                 <Input placeholder="Details" value={details} setValue={setDetails} />
                 <Input placeholder="State" value={state} setValue={setState} />
-                <Input placeholder="Start Time" value={startTimestamp} type="number" setValue={setStartTimestamp} />
-                <Input placeholder="Stop Time" value={stopTimestamp} type="number" setValue={setStopTimestamp} />
+                <Input placeholder="Start Time"
+                    IconButton={<IconButton
+                        icon="schedule"
+                        className="mt-2"
+                        onClick={() => { setStartTimestamp(Date.now().toString()) }} />}
+                    value={startTimestamp}
+                    type="number"
+                    setValue={setStartTimestamp} />
+                <Input placeholder="Stop Time"
+                    IconButton={<IconButton
+                        icon="schedule"
+                        className="mt-2"
+                        onClick={() => { setStopTimestamp(Date.now().toString()) }} />}
+                    value={stopTimestamp}
+                    type="number"
+                    setValue={setStopTimestamp} />
                 <Input placeholder="Large Image Key" value={largeImageKey} setValue={setLargeImageKey} />
                 <Input placeholder="Large Image Text" value={largeImageText} setValue={setLargeImageText} />
                 <Input placeholder="Small Image Key" value={smallImageKey} setValue={setSmallImageKey} />

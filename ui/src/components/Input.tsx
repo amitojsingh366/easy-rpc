@@ -1,4 +1,4 @@
-import React, { DetailedHTMLProps, Dispatch, FC, InputHTMLAttributes, SetStateAction } from "react";
+import React, { DetailedHTMLProps, Dispatch, FC, InputHTMLAttributes, ReactNode, SetStateAction, useState } from "react";
 
 export type InputProps = DetailedHTMLProps<
     InputHTMLAttributes<HTMLInputElement>,
@@ -6,23 +6,32 @@ export type InputProps = DetailedHTMLProps<
 > & {
     placeholder?: string
     value: string,
+    IconButton?: ReactNode,
     setValue: Dispatch<SetStateAction<string>>,
 }
 
 export const Input: FC<InputProps> = ({
     value,
     setValue,
+    IconButton,
     className = "",
     ...props
 }) => {
+    const [inFocus, setInFocus] = useState(false);
     return (
-        <input className={`bg-transparent border-discord-lightBlack border hover:border-black 
-        focus:border-discord-blurple outline-none transition-colors duration-200
-        rounded-lg h-11 w-56 text-white pl-4 pr-4 font-normal ${className}`}
-            value={value}
-            alt={value}
-            onChange={(e) => { setValue(e.target.value) }}
-            {...props}
-        />
+        <div className={`inline-flex bg-transparent h-11 w-56 border
+         ${inFocus ? 'border-discord-blurple' : 'border-discord-lightBlack hover:border-black'}
+         transition-colors duration-200 rounded-lg`}>
+            <input className={`bg-transparent  outline-none 
+         h-11 ${IconButton ? 'w-48' : 'w-56'} text-white pl-4 pr-4 font-normal ${className}`}
+                value={value}
+                alt={value}
+                onChange={(e) => { setValue(e.target.value) }}
+                onFocus={() => { setInFocus(true) }}
+                onBlur={() => { setInFocus(false) }}
+                {...props}
+            />
+            {IconButton ? IconButton : null}
+        </div>
     );
 }

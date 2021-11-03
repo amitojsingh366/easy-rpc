@@ -42,10 +42,10 @@ export async function createWindow() {
   IPCListeners.setWindow(mainWindow);
 
 
-  const homepage = path.join(__dirname, "../public/index.html");
-  await mainWindow.loadFile(homepage);
+  // const homepage = path.join(__dirname, "../public/index.html");
+  // await mainWindow.loadFile(homepage);
 
-  // await mainWindow.loadURL("http://localhost:8080");
+  await mainWindow.loadURL("http://localhost:8080");
   menu = Menu.buildFromTemplate(MENU_TEMPLATE);
   Menu.setApplicationMenu(menu);
   const handleLinks = (event: any, url: string) => {
