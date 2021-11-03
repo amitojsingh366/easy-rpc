@@ -28,6 +28,8 @@ export const commons = {
 
 const IPCListeners = new Listeners(app);
 
+if (process.platform === 'win32') app.setAppUserModelId("Easy RPC")
+
 export async function createWindow() {
   mainWindow = new BrowserWindow({
     height: 825,
@@ -39,13 +41,14 @@ export async function createWindow() {
     },
   });
 
+  mainWindow.webContents.openDevTools()
   IPCListeners.setWindow(mainWindow);
 
 
-  const homepage = path.join(__dirname, "../public/index.html");
-  await mainWindow.loadFile(homepage);
+  // const homepage = path.join(__dirname, "../public/index.html");
+  // await mainWindow.loadFile(homepage);
 
-  // await mainWindow.loadURL("http://localhost:8080");
+  await mainWindow.loadURL("http://localhost:8080");
   menu = Menu.buildFromTemplate(MENU_TEMPLATE);
   Menu.setApplicationMenu(menu);
   const handleLinks = (event: any, url: string) => {
@@ -65,12 +68,6 @@ app.on("ready", async () => {
   await startHandler();
   tray = new Tray(path.join(__dirname, `../icons/tray.png`));
   await HandleTray(tray);
-
-  if (!mainWindow.isDestroyed()) {
-    mainWindow.webContents.send("@app/shouldDock", "");
-    mainWindow.webContents.send("@app/autoLaunch", "");
-    mainWindow.webContents.send("@app/started", "");
-  }
 });
 
 if (!instanceLock) {

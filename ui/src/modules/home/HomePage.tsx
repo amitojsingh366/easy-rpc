@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useContext, useRef, useLayoutEffect } from 'react';
-import { Input } from './components/Input';
-import { ProfileContext } from './modules/ProfileProvider';
-import { Selection } from './components/Selection';
-import type { Profile } from './types/types';
-import { IconButton, IconButtonVariants } from './components/IconButton';
-import { Button, ButtonSize, ButtonVariant } from './components/Button';
-import { Switch } from './components/Switch';
+import React, { FC, useState, useEffect, useContext, useRef, useLayoutEffect } from "react"
+import { Input } from '../../components/Input';
+import { ProfileContext } from '../../modules/ProfileProvider';
+import { Selection } from '../../components/Selection';
+import type { Profile } from '../../types/types';
+import { IconButton, IconButtonVariants } from '../../components/IconButton';
+import { Button, ButtonSize, ButtonVariant } from '../../components/Button';
+import { Switch } from '../../components/Switch';
+import { Link } from 'react-router-dom';
 
-export default function Home() {
+
+export const HomePage: FC = () => {
     // @ts-ignore
     const { ipcRenderer } = window.require('electron');
     const [version, setVersion] = useState("");
@@ -54,6 +56,11 @@ export default function Home() {
         ipcRenderer.on("@rpc/status", (event: any, isRunning: boolean) => {
             setRpcStarted(isRunning);
         })
+    }, []);
+
+    useLayoutEffect(() => {
+        if (!profile || !autoLaunchRef.current || !appDockRef.current || rpcStarted) return;
+        ipcRenderer.send("@window/loaded");
 
         ipcRenderer.on("@app/started", (event: any, args: any) => {
             if (!appDockRef.current || !autoLaunchRef.current || !profile) return;
@@ -71,7 +78,7 @@ export default function Home() {
             if (!autoLaunchRef.current) return;
             ipcRenderer.send("@app/autoLaunch", autoLaunchRef.current.checked);
         });
-    }, [])
+    }, [profile, autoLaunchRef.current, appDockRef.current, rpcStarted])
 
     // feild values
     const [profileName, setProfileName] = useState("");
@@ -171,9 +178,8 @@ export default function Home() {
         localStorage.setItem(autoLaunchKey, JSON.stringify(autoLaunchRef.current.checked));
         ipcRenderer.send(autoLaunchKey, autoLaunchRef.current.checked);
     }
-
     return (
-        <div className="bg-discord-grey w-full h-auto min-h-full flex flex-col items-center p-5 pt-4">
+        <div className="flex flex-col items-center">
             <p className="text-white font-black text-4xl p-5">Easy RPC</p>
             {version ? <p className="text-xs text-gray-400 font-black pb-2">v{version}</p> : null}
 
@@ -270,15 +276,13 @@ export default function Home() {
             <div className="p-4 text-discord-lightGrey text-sm text-center">
                 <p>Work by <a href="https://amitoj.net">Amitoj Singh</a></p>
                 <p>View the source code <a href="https://github.com/amitojsingh366/easy-rpc">here</a></p>
-                <p>Don't know what's going on? Check the <button className="fakeA">help section</button></p>
+                <p>Don't know what's going on? Check the <Link to="/help" className="fakeA">help section</Link> </p>
 
                 <p className="mt-1">Dock to system tray: <Switch fref={appDockRef} onClick={toggleAppDock} /></p>
                 <p>Auto launch on startup: <Switch fref={autoLaunchRef} onClick={toggleAutoLaunch} /></p>
 
                 <Button onClick={clearData} className="mt-2" variant={ButtonVariant.grey} size={ButtonSize.tiny}>Clear Data</Button>
             </div>
-
         </div>
-    );
+    )
 }
-

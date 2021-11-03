@@ -77,6 +77,14 @@ export class Listeners {
             if (!savePath) return;
 
             writeFileSync(savePath, profileData);
+        });
+
+        ipcMain.on("@window/loaded", (event, data) => {
+            if (this.window && !this.window.isDestroyed()) {
+                this.window.webContents.send("@app/shouldDock", "");
+                this.window.webContents.send("@app/autoLaunch", "");
+                this.window.webContents.send("@app/started", "");
+            }
         })
     }
 }

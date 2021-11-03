@@ -19,12 +19,6 @@ export async function startHandler() {
         await updateRPC(data);
     });
 
-    ipcMain.on("@window/navigate", (event, file) => {
-        if (!mainWindow.isDestroyed()) {
-            mainWindow.webContents.loadFile(path.join(__dirname, `../public/${file}`)).catch(console.error);
-        }
-    })
-
     ipcMain.on("@rpc/status", (event, args) => {
         if (!mainWindow.isDestroyed()) {
             mainWindow.webContents.send("@rpc/status", RPC_STARTED);
@@ -32,7 +26,9 @@ export async function startHandler() {
     });
 
     ipcMain.on("@rpc/dockAndStart", async (event, data) => {
+        console.log("dock and start")
         if (commons.autoLaunch && commons.shouldDock) {
+            data = JSON.parse(data);
             await updateRPC(data);
             rpcEmitter.once('@rpc/started', (event, args) => {
                 if (!mainWindow.isDestroyed()) {
