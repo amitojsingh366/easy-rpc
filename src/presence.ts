@@ -1,8 +1,7 @@
 import * as Discord from 'discord-rpc';
-import { ipcMain, BrowserWindow } from 'electron';
+import { ipcMain } from 'electron';
 import * as path from "path";
 import { commons, mainWindow } from "./index"
-import prompt from 'electron-prompt';
 import { EventEmitter } from 'events';
 
 export let RPC_STARTED = false;
@@ -41,23 +40,6 @@ export async function startHandler() {
                 }
             })
         }
-    });
-
-    ipcMain.on("@rpc/importPrompt", (event, args) => {
-
-        prompt({
-            title: 'Import Profile',
-            label: 'Profile ID to import: ',
-            value: '',
-            inputAttrs: {
-                type: 'text'
-            },
-            type: 'input'
-        }).then((r: string | null) => {
-            if (r !== null) {
-                mainWindow.webContents.send("@rpc/importPrompt", r);
-            }
-        }).catch(console.error);
     });
 }
 

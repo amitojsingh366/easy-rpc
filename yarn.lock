@@ -817,15 +817,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/electron-prompt@npm:^1.6.1":
-  version: 1.6.1
-  resolution: "@types/electron-prompt@npm:1.6.1"
-  dependencies:
-    electron: latest
-  checksum: edaef5bd6b03ba465c1b7dcc13aa46f96918f60f1b8400249ea5db00f72b9d92c3ee49d7a8c2b587faca37769c26a47b0cfa2a4a176700482d3e69e75c683468
-  languageName: node
-  linkType: hard
-
 "@types/estree@npm:*":
   version: 0.0.50
   resolution: "@types/estree@npm:0.0.50"
@@ -2644,14 +2635,12 @@ __metadata:
   dependencies:
     "@types/auto-launch": ^5.0.2
     "@types/discord-rpc": ^3.0.6
-    "@types/electron-prompt": ^1.6.1
     auto-launch: ^5.0.5
     discord-rpc: ^4.0.1
     electron: ^15.3.0
     electron-builder: ^22.13.1
     electron-builder-notarize: ^1.2.0
     electron-log: ^4.4.1
-    electron-prompt: ^1.7.0
     electron-updater: ^4.6.1
     typescript: 4.2.3
   languageName: unknown
@@ -2748,13 +2737,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-prompt@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "electron-prompt@npm:1.7.0"
-  checksum: 1af2868ad47987e9e35243c3b1745ce2f2ff65d35f2ed7b6a5bd2e0c545e08889b57aaf4c496ccfd5fb73e181ebe10cb2f612ba89344ae1c3f3dd1b90eddf6a2
-  languageName: node
-  linkType: hard
-
 "electron-publish@npm:22.14.5":
   version: 22.14.5
   resolution: "electron-publish@npm:22.14.5"
@@ -2793,7 +2775,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^15.3.0, electron@npm:latest":
+"electron@npm:^15.3.0":
   version: 15.3.0
   resolution: "electron@npm:15.3.0"
   dependencies:
@@ -6986,7 +6968,6 @@ __metadata:
     snowpack: ^3.8.8
     tailwindcss: ^2.2.19
     typescript: ^4.2.4
-    zustand: ^3.6.2
   languageName: unknown
   linkType: soft
 
@@ -7381,17 +7362,5 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
-  languageName: node
-  linkType: hard
-
-"zustand@npm:^3.6.2":
-  version: 3.6.2
-  resolution: "zustand@npm:3.6.2"
-  peerDependencies:
-    react: ">=16.8"
-  peerDependenciesMeta:
-    react:
-      optional: true
-  checksum: fe790a474ef7111b7ed89ab42d76cf7814c7368de905e304ce023a25d8dc0b5d5563e6b7e19ab0d1f95321010df0deccaff4a63c5aba91b600efd4c01a4297ac
   languageName: node
   linkType: hard
