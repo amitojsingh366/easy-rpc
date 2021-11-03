@@ -1,6 +1,6 @@
 {
     "name": "easy-rpc",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "A easy discord rpc",
     "main": "./dist/index.js",
     "workspaces": [
