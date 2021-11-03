@@ -13,7 +13,7 @@ export const Input: FC<InputProps> = ({
     value,
     setValue,
     className = "",
-    placeholder = ""
+    ...props
 }) => {
     return (
         <input className={`bg-transparent border-discord-lightBlack border hover:border-black 
@@ -21,8 +21,8 @@ export const Input: FC<InputProps> = ({
         rounded-lg h-11 w-56 text-white pl-4 pr-4 font-normal ${className}`}
             value={value}
             alt={value}
-            placeholder={placeholder}
             onChange={(e) => { setValue(e.target.value) }}
+            {...props}
         />
     );
 }

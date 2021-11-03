@@ -11,6 +11,7 @@ export default function Home() {
     // @ts-ignore
     const { ipcRenderer } = window.require('electron');
     const [version, setVersion] = useState("");
+    const [rpcStarted, setRpcStarted] = useState(false);
 
     const autoLaunchKey = "@app/autoLaunch";
     const appDockKey = "@app/shouldDock";
@@ -44,6 +45,15 @@ export default function Home() {
         } else {
             autoLaunchRef.current.checked = false;
         }
+
+        ipcRenderer.send("@rpc/status", "");
+        setInterval(() => {
+            ipcRenderer.send("@rpc/status", "");
+        }, 2500)
+
+        ipcRenderer.on("@rpc/status", (event: any, isRunning: boolean) => {
+            setRpcStarted(isRunning);
+        })
     }, [])
 
     // feild values
@@ -187,8 +197,8 @@ export default function Home() {
                 <Input placeholder="Application ID" value={applicationId} setValue={setApplicationId} />
                 <Input placeholder="Details" value={details} setValue={setDetails} />
                 <Input placeholder="State" value={state} setValue={setState} />
-                <Input placeholder="Start Time" value={startTimestamp} setValue={setStartTimestamp} />
-                <Input placeholder="Stop Time" value={stopTimestamp} setValue={setStopTimestamp} />
+                <Input placeholder="Start Time" value={startTimestamp} type="number" setValue={setStartTimestamp} />
+                <Input placeholder="Stop Time" value={stopTimestamp} type="number" setValue={setStopTimestamp} />
                 <Input placeholder="Large Image Key" value={largeImageKey} setValue={setLargeImageKey} />
                 <Input placeholder="Large Image Text" value={largeImageText} setValue={setLargeImageText} />
                 <Input placeholder="Small Image Key" value={smallImageKey} setValue={setSmallImageKey} />
@@ -215,7 +225,11 @@ export default function Home() {
 
             <div className="flex flex-row gap-x-2 p-8 pb-4">
                 <Button onClick={save}>Save</Button>
-                <Button onClick={start} variant={ButtonVariant.blurpleFilled}>Start</Button>
+                <Button
+                    onClick={start}
+                    variant={ButtonVariant.blurpleFilled}>
+                    {rpcStarted ? 'Update' : 'Start'}
+                </Button>
             </div>
 
             <Button onClick={() => {

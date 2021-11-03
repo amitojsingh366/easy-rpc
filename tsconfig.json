@@ -23,7 +23,6 @@
         "noImplicitAny": false,
     },
     "include": [
-        "src/**/*.ts",
-        "public/**/*"
+        "src/**/*.ts"
     ]
 }
