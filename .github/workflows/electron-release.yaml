@@ -28,6 +28,8 @@ jobs:
         run: yarn
       - name: Compile Typescript
         run: yarn compile
+      - name: Build UI
+        run: yarn build:ui
       - name: Prepare for app notarization
         if: startsWith(matrix.os, 'macos')
         # Import Apple API key for app notarization on macOS

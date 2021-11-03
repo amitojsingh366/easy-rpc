@@ -54,6 +54,23 @@ export default function Home() {
         ipcRenderer.on("@rpc/status", (event: any, isRunning: boolean) => {
             setRpcStarted(isRunning);
         })
+
+        ipcRenderer.on("@app/started", (event: any, args: any) => {
+            if (!appDockRef.current || !autoLaunchRef.current || !profile) return;
+            if (appDockRef.current.checked && autoLaunchRef.current.checked) {
+                ipcRenderer.send("@rpc/dockAndStart", JSON.stringify(profile?.data));
+            }
+        });
+
+        ipcRenderer.on("@app/shouldDock", (event: any, args: any) => {
+            if (!appDockRef.current) return;
+            ipcRenderer.send("@app/shouldDock", appDockRef.current.checked);
+        });
+
+        ipcRenderer.on("@app/autoLaunch", (event: any, args: any) => {
+            if (!autoLaunchRef.current) return;
+            ipcRenderer.send("@app/autoLaunch", autoLaunchRef.current.checked);
+        });
     }, [])
 
     // feild values
