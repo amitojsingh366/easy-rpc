@@ -85,6 +85,13 @@ export class Listeners {
                 this.window.webContents.send("@app/autoLaunch", "");
                 this.window.webContents.send("@app/started", "");
             }
+        });
+
+        ipcMain.on("@window/change_size", (event, data) => {
+            if (!this.window) return;
+            const currentSize = this.window.getSize();
+            if (currentSize[0] >= 1000) this.window.setSize(600, 825, true)
+            else this.window.setSize(1080, 825, true)
         })
     }
 }

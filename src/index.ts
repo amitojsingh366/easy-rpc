@@ -41,7 +41,6 @@ export async function createWindow() {
     },
   });
 
-  mainWindow.webContents.openDevTools()
   IPCListeners.setWindow(mainWindow);
 
 

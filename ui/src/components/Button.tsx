@@ -9,7 +9,7 @@ export enum ButtonVariant {
 }
 
 export enum ButtonSize {
-    default = 'pt-2 pb-2 pl-8 pr-8',
+    default = 'pt-2 pb-2 w-28',
     tiny = 'pt-0.5 pb-0.5 pl-3 pr-3 text-xs'
 }
 

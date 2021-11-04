@@ -7,6 +7,7 @@ import { IconButton, IconButtonVariants } from '../../components/IconButton';
 import { Button, ButtonSize, ButtonVariant } from '../../components/Button';
 import { Switch } from '../../components/Switch';
 import { Link } from 'react-router-dom';
+import { VisualizerContext } from "./VisualizerProvider";
 
 
 export const HomePage: FC = () => {
@@ -81,24 +82,24 @@ export const HomePage: FC = () => {
     }, [profile, autoLaunchRef.current, appDockRef.current, rpcStarted])
 
     // feild values
-    const [profileName, setProfileName] = useState("");
-    const [applicationId, setApplicationId] = useState("");
-    const [details, setDetails] = useState("")
-    const [state, setState] = useState("")
-    const [startTimestamp, setStartTimestamp] = useState("")
-    const [stopTimestamp, setStopTimestamp] = useState("")
-    const [largeImageKey, setLargeImageKey] = useState("")
-    const [largeImageText, setLargeImageText] = useState("");
-    const [smallImageKey, setSmallImageKey] = useState("");
-    const [smallImageText, setSmallImageText] = useState("");
-    const [partyId, setPartyId] = useState("");
-    const [partySize, setPartySize] = useState("");
-    const [partyMax, setPartyMax] = useState("");
-    const [joinSecret, setJoinSecret] = useState("");
-    const [button1Label, setButton1Label] = useState("");
-    const [button1Url, setButton1Url] = useState("");
-    const [button2Label, setButton2Label] = useState("");
-    const [button2Url, setButton2Url] = useState("");
+    const { profileName, applicationId,
+        details, state,
+        startTimestamp, stopTimestamp,
+        largeImageKey, largeImageText,
+        smallImageKey, smallImageText,
+        partyId, partySize,
+        partyMax, joinSecret,
+        button1Label, button1Url,
+        button2Label, button2Url,
+        setProfileName, setApplicationId,
+        setDetails, setState,
+        setStartTimestamp, setStopTimestamp,
+        setLargeImageKey, setLargeImageText,
+        setSmallImageKey, setSmallImageText,
+        setPartyId, setPartySize,
+        setPartyMax, setJoinSecret,
+        setButton1Label, setButton1Url,
+        setButton2Label, setButton2Url } = useContext(VisualizerContext)
 
     const [showButton1Fields, setShowButton1Fields] = useState(false);
     const [showButton2Fields, setShowButton2Fields] = useState(false);
@@ -261,6 +262,7 @@ export const HomePage: FC = () => {
             </div>
 
             <div className="flex flex-row gap-x-2 p-8 pb-4">
+                <Button onClick={() => { ipcRenderer.send("@window/change_size") }}>Visualizer</Button>
                 <Button onClick={save}>Save</Button>
                 <Button
                     onClick={start}

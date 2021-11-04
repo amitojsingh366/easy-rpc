@@ -24,6 +24,11 @@ export interface ProfileData {
     button_2_url: string | undefined;
 }
 
+export interface AppAsset {
+    id: string;
+    type: number;
+    name: string
+}
 
 export interface SelectionOption {
     value: string,
