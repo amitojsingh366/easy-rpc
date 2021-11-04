@@ -24,7 +24,11 @@ export const Selection: FC<SelectionProps> = ({
             value={value}
             onChange={(e) => { setValue(e.target.value) }}
         >
-            {options && options.map((op) => <option value={op.value} selected={op.selected} key={op.value}>{op.text}</option>)}
+            {options && options.map((op) =>
+                <option className="text-white bg-discord-grey"
+                    value={op.value}
+                    selected={op.selected}
+                    key={op.value}>{op.text}</option>)}
         </select>
     );
 }

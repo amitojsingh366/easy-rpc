@@ -1,4 +1,7 @@
-import React, { DetailedHTMLProps, Dispatch, FC, InputHTMLAttributes, ReactNode, SetStateAction, useState } from "react";
+import React, {
+    DetailedHTMLProps, Dispatch, FC, InputHTMLAttributes,
+    ReactNode, SetStateAction, useState
+} from "react";
 
 export type InputProps = DetailedHTMLProps<
     InputHTMLAttributes<HTMLInputElement>,

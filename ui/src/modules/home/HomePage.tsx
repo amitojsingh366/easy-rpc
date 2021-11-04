@@ -179,7 +179,7 @@ export const HomePage: FC = () => {
         ipcRenderer.send(autoLaunchKey, autoLaunchRef.current.checked);
     }
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center w-full">
             <p className="text-white font-black text-4xl p-5">Easy RPC</p>
             {version ? <p className="text-xs text-gray-400 font-black pb-2">v{version}</p> : null}
 
