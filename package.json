@@ -10,7 +10,7 @@
         "compile": "tsc",
         "watch": "tsc -w",
         "dev": "yarn compile && electron ./dist/index.js",
-        "build:ui": "rm -rf public && cd ui && yarn build && mv build ../public",
+        "build:ui": "cd ui && yarn build",
         "build:all": "yarn compile && electron-builder -mwl",
         "build:mac": "yarn compile && electron-builder --mac",
         "build:win": "yarn compile && electron-builder --win",
