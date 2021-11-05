@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, useContext, useRef, useLayoutEffect } from "react"
+import React, { FC, useState, useEffect, useContext, useRef, useLayoutEffect, useCallback } from "react"
 import { Input } from '../../components/Input';
 import { ProfileContext } from '../../modules/ProfileProvider';
 import { Selection } from '../../components/Selection';
@@ -131,7 +131,7 @@ export const HomePage: FC = () => {
         setButton2Url(profile?.data?.button_2_url || "");
     }, [profile]);
 
-    const save = () => {
+    const save = (start?: boolean) => {
         const newProfile: Profile = {
             id: currentProfileId || "",
             name: profileName,
@@ -157,11 +157,7 @@ export const HomePage: FC = () => {
         }
 
         updateProfile(newProfile.id, newProfile);
-    }
-
-    const start = () => {
-        save();
-        ipcRenderer.send("@rpc/update", profile?.data);
+        ipcRenderer.send("@rpc/update", newProfile.data)
     }
 
     const addButton = () => {
@@ -222,21 +218,30 @@ export const HomePage: FC = () => {
                 <Input placeholder="Details" value={details} setValue={setDetails} />
                 <Input placeholder="State" value={state} setValue={setState} />
                 <Input placeholder="Start Time"
-                    IconButton={<IconButton
-                        icon="schedule"
-                        className="mt-2"
-                        onClick={() => { setStartTimestamp(Date.now().toString()) }} />}
                     value={startTimestamp}
                     type="number"
-                    setValue={setStartTimestamp} />
-                <Input placeholder="Stop Time"
-                    IconButton={<IconButton
+                    setValue={setStartTimestamp}>
+                    <IconButton
                         icon="schedule"
                         className="mt-2"
-                        onClick={() => { setStopTimestamp(Date.now().toString()) }} />}
+                        title="Current Time"
+                        onClick={() => { setStartTimestamp(Date.now().toString()) }} />
+                    <IconButton
+                        icon="today"
+                        className="mt-2 text-sm"
+                        title="Current Local Time"
+                        onClick={() => { setStartTimestamp(new Date().setHours(0, 0, 0, 0).toString()) }} />
+                </Input>
+                <Input placeholder="Stop Time"
                     value={stopTimestamp}
                     type="number"
-                    setValue={setStopTimestamp} />
+                    setValue={setStopTimestamp}>
+                    <IconButton
+                        icon="schedule"
+                        className="mt-2"
+                        title="Current Time"
+                        onClick={() => { setStopTimestamp(Date.now().toString()) }} />
+                </Input>
                 <Input placeholder="Large Image Key" value={largeImageKey} setValue={setLargeImageKey} />
                 <Input placeholder="Large Image Text" value={largeImageText} setValue={setLargeImageText} />
                 <Input placeholder="Small Image Key" value={smallImageKey} setValue={setSmallImageKey} />
@@ -263,9 +268,9 @@ export const HomePage: FC = () => {
 
             <div className="flex flex-row gap-x-2 p-8 pb-4">
                 <Button onClick={() => { ipcRenderer.send("@window/change_size") }}>Visualizer</Button>
-                <Button onClick={save}>Save</Button>
+                <Button onClick={() => { save }}>Save</Button>
                 <Button
-                    onClick={start}
+                    onClick={() => { save(true) }}
                     variant={ButtonVariant.blurpleFilled}>
                     {rpcStarted ? 'Update' : 'Start'}
                 </Button>

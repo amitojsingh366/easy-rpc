@@ -18,12 +18,14 @@ export const IconButton: FC<IconButtonProps> = ({
     onClick,
     variant = IconButtonVariants.grey,
     className = "",
+    ...props
 }) => {
     return (
         <span className={`flex items-center justify-center bg-transparent
         material-icons p-2 h-6 w-6 rounded-full cursor-pointer 
         transition-colors duration-150 ${variant} border ${className}`}
             onClick={onClick}
+            {...props}
         >{icon}</span>
     );
 }

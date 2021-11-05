@@ -70,13 +70,14 @@ export const ProfileProvider: FC = ({ children }) => {
     const updateProfile = (id: string, newProfile: Profile) => {
         if (!profiles) return;
         // @ts-ignore
-        const updateIndex = profiles.indexOf(profiles.find((p) => p.id == id))
+        const updateIndex = profiles.indexOf(profiles.find((p) => p.id == id));
+        setProfile(newProfile);
         setProfiles((p) => {
             if (!p) return p;
             const newP = [...p];
             newP[updateIndex] = newProfile;
             return newP;
-        })
+        });
     }
 
     const importProfile = () => {
