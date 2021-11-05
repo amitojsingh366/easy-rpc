@@ -2,10 +2,11 @@ import React, { FC, useEffect, useState } from "react";
 
 export type ElapsedTimeProps = {
     startTime: Date
+    endTime?: Date,
 }
 
 export const ElaspedTime: FC<ElapsedTimeProps> = ({
-    startTime
+    startTime, endTime
 }) => {
     const [time, setTime] = useState("");
     const [interval, setInt] = useState<number | undefined>(undefined);
@@ -13,8 +14,11 @@ export const ElaspedTime: FC<ElapsedTimeProps> = ({
     useEffect(() => {
         clearInterval(interval);
         const int = setInterval(() => {
-            const endTime = new Date();
-            let timeDiff = endTime.getTime() - startTime.getTime();
+
+            let et = new Date();
+
+            if (endTime) et = endTime
+            let timeDiff = et.getTime() - startTime.getTime();
 
 
             timeDiff = timeDiff / 1000;
@@ -50,9 +54,9 @@ export const ElaspedTime: FC<ElapsedTimeProps> = ({
 
         }, 1000);
         setInt(int);
-    }, [startTime])
+    }, [startTime, endTime])
 
     return (<p>
-        {time} elapsed
+        {time} {endTime ? 'left' : 'elapsed'}
     </p>)
 }

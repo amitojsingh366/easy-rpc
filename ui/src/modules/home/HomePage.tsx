@@ -157,7 +157,7 @@ export const HomePage: FC = () => {
         }
 
         updateProfile(newProfile.id, newProfile);
-        ipcRenderer.send("@rpc/update", newProfile.data)
+        if (start) ipcRenderer.send("@rpc/update", newProfile.data)
     }
 
     const addButton = () => {

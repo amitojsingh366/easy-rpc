@@ -4,7 +4,7 @@ import type { AppAsset } from "../../types/types";
 import { VisualizerContext } from "./VisualizerProvider";
 
 export const Visualizer: FC = () => {
-    const { applicationId, details, state, largeImageKey, smallImageKey, joinSecret,
+    const { applicationId, details, state, largeImageKey, smallImageKey, joinSecret, stopTimestamp,
         button1Label, button1Url, button2Label, button2Url, startTimestamp, largeImageText, smallImageText } = useContext(VisualizerContext);
     const [appName, setAppName] = useState("");
     const [appAssets, setAppAssets] = useState<AppAsset[]>([]);
@@ -73,7 +73,8 @@ export const Visualizer: FC = () => {
                         <div className="  text-sm text-gray-400">
                             {details}<br />
                             {state}<br />
-                            <ElaspedTime startTime={new Date(Number(startTimestamp))} />
+                            {startTimestamp || stopTimestamp ? <ElaspedTime startTime={new Date(Number(startTimestamp))} endTime={stopTimestamp !== "" ?
+                                new Date(Number(stopTimestamp)) : undefined} /> : null}
                         </div>
                     </div>
                 </div>
