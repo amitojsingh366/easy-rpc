@@ -5,7 +5,7 @@ import { VisualizerContext } from "./VisualizerProvider";
 
 export const Visualizer: FC = () => {
     const { applicationId, details, state, largeImageKey, smallImageKey, joinSecret,
-        button1Label, button1Url, button2Label, button2Url, startTimestamp } = useContext(VisualizerContext);
+        button1Label, button1Url, button2Label, button2Url, startTimestamp, largeImageText, smallImageText } = useContext(VisualizerContext);
     const [appName, setAppName] = useState("");
     const [appAssets, setAppAssets] = useState<AppAsset[]>([]);
     const [lastRequest, setLastRequest] = useState(0);
@@ -49,6 +49,7 @@ export const Visualizer: FC = () => {
                 </div>
                 <div className=" flex flex-row  px-5 py-2 gap-2">
                     <div className="w-20 h-20 rounded-lg mb-2"
+                        title={largeImageText}
                         style={{
                             backgroundImage: `url(${"https://cdn.discordapp.com/app-assets/777902409875324988/" +
                                 appAssets.find((asset) => asset.name === largeImageKey)?.id
@@ -62,7 +63,7 @@ export const Visualizer: FC = () => {
                             src={"https://cdn.discordapp.com/app-assets/777902409875324988/" +
                                 appAssets.find((asset) => asset.name === smallImageKey)?.id
                                 + ".png"
-                            } />
+                            } alt={smallImageText} title={smallImageText} />
                     </div>
 
                     <div>

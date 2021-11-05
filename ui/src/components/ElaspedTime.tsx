@@ -1,4 +1,4 @@
-import React, { FC, useLayoutEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 
 export type ElapsedTimeProps = {
     startTime: Date
@@ -8,11 +8,12 @@ export const ElaspedTime: FC<ElapsedTimeProps> = ({
     startTime
 }) => {
     const [time, setTime] = useState("");
-    useLayoutEffect(() => {
+    const [interval, setInt] = useState<number | undefined>(undefined);
 
-        setInterval(() => {
+    useEffect(() => {
+        clearInterval(interval);
+        const int = setInterval(() => {
             const endTime = new Date();
-
             let timeDiff = endTime.getTime() - startTime.getTime();
 
 
@@ -31,10 +32,10 @@ export const ElaspedTime: FC<ElapsedTimeProps> = ({
 
             timeDiff = Math.floor(timeDiff / 60);
 
-
             let hours = timeDiff % 24;
 
             timeDiff = Math.floor(timeDiff / 24);
+
 
             let days = timeDiff;
 
@@ -46,7 +47,9 @@ export const ElaspedTime: FC<ElapsedTimeProps> = ({
             } else {
                 setTime(totalHoursAsString + ":" + minutesAsString + ":" + secondsAsString);
             }
-        }, 1000)
+
+        }, 1000);
+        setInt(int);
     }, [startTime])
 
     return (<p>
