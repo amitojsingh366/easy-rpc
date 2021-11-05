@@ -84,6 +84,15 @@ export class Listeners {
                 this.window.webContents.send("@app/shouldDock", "");
                 this.window.webContents.send("@app/autoLaunch", "");
                 this.window.webContents.send("@app/started", "");
+                if (rpc.user) {
+                    this.window.webContents.send("@visualizer/profile", {
+                        userTag: [
+                            rpc.user.username,
+                            '#' + rpc.user.discriminator
+                        ],
+                        avatar: `https://cdn.discordapp.com/avatars/${rpc.user.id}/${rpc.user.avatar}.png`
+                    });
+                }
             }
         });
 

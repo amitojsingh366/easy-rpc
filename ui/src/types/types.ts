@@ -35,3 +35,8 @@ export interface SelectionOption {
     text: string,
     selected: boolean
 }
+
+export interface UserData {
+    avatar: string;
+    userTag: string[];
+}

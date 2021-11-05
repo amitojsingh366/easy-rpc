@@ -3,10 +3,11 @@ import React, { FC, useEffect, useState } from "react";
 export type ElapsedTimeProps = {
     startTime: Date
     endTime?: Date,
+    className?: string
 }
 
 export const ElaspedTime: FC<ElapsedTimeProps> = ({
-    startTime, endTime
+    startTime, endTime, className
 }) => {
     const [time, setTime] = useState("");
     const [interval, setInt] = useState<number | undefined>(undefined);
@@ -56,7 +57,7 @@ export const ElaspedTime: FC<ElapsedTimeProps> = ({
         setInt(int);
     }, [startTime, endTime])
 
-    return (<p>
+    return (<p className={className}>
         {time} {endTime ? 'left' : 'elapsed'}
     </p>)
 }

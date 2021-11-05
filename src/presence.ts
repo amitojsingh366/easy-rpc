@@ -14,6 +14,7 @@ export let rpc = new Discord.Client({ transport: 'ipc' });
 let RPC_DESTROYED = false;
 const rpcEmitter = new EventEmitter();
 
+
 export async function startHandler() {
     ipcMain.on("@rpc/update", async (event, data) => {
         await updateRPC(data);
@@ -113,6 +114,13 @@ export async function updateRPC(data: any) {
         rpcEmitter.emit('@rpc/started')
         if (!mainWindow.isDestroyed()) {
             mainWindow.webContents.send("@rpc/status", RPC_STARTED);
+            mainWindow.webContents.send("@visualizer/profile", {
+                userTag: [
+                    rpc.user.username,
+                    '#' + rpc.user.discriminator
+                ],
+                avatar: `https://cdn.discordapp.com/avatars/${rpc.user.id}/${rpc.user.avatar}.png`
+            });
         }
     } else {
         if (!RPC_DESTROYED) {
@@ -125,6 +133,13 @@ export async function updateRPC(data: any) {
                 rpcEmitter.emit('@rpc/started')
                 if (!mainWindow.isDestroyed()) {
                     mainWindow.webContents.send("@rpc/status", RPC_STARTED);
+                    mainWindow.webContents.send("@visualizer/profile", {
+                        userTag: [
+                            rpc.user.username,
+                            '#' + rpc.user.discriminator
+                        ],
+                        avatar: `https://cdn.discordapp.com/avatars/${rpc.user.id}/${rpc.user.avatar}.png`
+                    });
                 }
             });
         }

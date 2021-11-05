@@ -268,7 +268,7 @@ export const HomePage: FC = () => {
 
             <div className="flex flex-row gap-x-2 p-8 pb-4">
                 <Button onClick={() => { ipcRenderer.send("@window/change_size") }}>Visualizer</Button>
-                <Button onClick={() => { save }}>Save</Button>
+                <Button onClick={() => { save(false) }}>Save</Button>
                 <Button
                     onClick={() => { save(true) }}
                     variant={ButtonVariant.blurpleFilled}>
